@@ -12,3 +12,13 @@ pom.xml.asc
 .lein-failures
 .nrepl-port
 .cpcache/
+.lsp
+.clj-kondo
+.calva
+.vscode
+/dist/
+.metals
+.bloop
+/project/.bloop
+/project/target/
+/project/project/
