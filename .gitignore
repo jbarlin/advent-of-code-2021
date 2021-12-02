@@ -22,3 +22,4 @@ pom.xml.asc
 /project/.bloop
 /project/target/
 /project/project/
+/.idea/
