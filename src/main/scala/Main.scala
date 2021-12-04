@@ -3,9 +3,10 @@ import lib.DayTemplate
 
 @main def hello: Unit = {
     println("Let's go AoC 2021!")
-    runDay(1, Day1);
-    runDay(2, Day2);
-    runDay(3, Day3);
+    // runDay(1, Day1);
+    // runDay(2, Day2);
+    // runDay(3, Day3);
+    runDay(4, Day4);
     println("\nAnd ... done!")
 }
 
