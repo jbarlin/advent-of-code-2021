@@ -2,6 +2,7 @@ import scala.io.Source
 import lib.DayTemplate;
 
 object Day1 extends DayTemplate[List[Int]] {
+    
     def parseInput(): List[Int] = {
         Source.fromResource("day1.txt").getLines.toList.map(s => s.toInt)
     }

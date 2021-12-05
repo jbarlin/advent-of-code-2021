@@ -86,9 +86,9 @@ class BinarySearcher(
     }
 }
 
-object Day3 extends DayTemplate[(List[Tally], List[List[Int]])] {
+object Day3 extends DayTemplate[List[List[Int]]] {
     def parseInput() = {
-        val input = Source
+        Source
             .fromResource("day3.txt")
             .getLines
             .map(str => {
@@ -98,10 +98,12 @@ object Day3 extends DayTemplate[(List[Tally], List[List[Int]])] {
                     })
             })
             .toList
+    }
 
+    def partOne(input: List[List[Int]]): String = {
         val startTally: List[Tally] = input.head.map(_ => new Tally());
-        (
-          input
+
+        val binary: (String, String) = input
               .map((list) => {
                   list
                       .map(dig => new Tally().add(dig))
@@ -110,13 +112,7 @@ object Day3 extends DayTemplate[(List[Tally], List[List[Int]])] {
                   tallyA
                       .zip(tallyB)
                       .map(pair => pair._1 + pair._2)
-              }),
-          input
-        )
-    }
-
-    def partOne(input: (List[Tally], List[List[Int]])): String = {
-        val binary: (String, String) = input._1
+              })
             .foldLeft(("", ""))((strs, tally) => {
                 (
                   strs._1 + tally.toLarger().toString,
@@ -128,9 +124,8 @@ object Day3 extends DayTemplate[(List[Tally], List[List[Int]])] {
             .toString()
     }
 
-    def partTwo(input: (List[Tally], List[List[Int]])): String = {
-        val binaries: List[List[Int]] = input._2
-        val binSearch: BinarySearcher = new BinarySearcher(binaries, binaries);
+    def partTwo(input: List[List[Int]]): String = {
+        val binSearch: BinarySearcher = new BinarySearcher(input, input);
         val searched: BinarySearcher  = binSearch.reduce(0);
         val larger: String            = searched.larger.head.foldLeft("")((c, u) => c + u.toString)
         val smaller: String           = searched.smaller.head.foldLeft("")((c, u) => c + u.toString)

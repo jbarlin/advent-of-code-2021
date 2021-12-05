@@ -5,5 +5,7 @@ lazy val root = project
     .settings(
       name         := "aoc",
       version      := "0.1.0-SNAPSHOT",
-      scalaVersion := scala3Version
+      scalaVersion := scala3Version,
+      // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+      libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.12.0"
     )

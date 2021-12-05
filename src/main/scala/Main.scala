@@ -3,17 +3,21 @@ import lib.DayTemplate
 
 @main def hello: Unit = {
     println("Let's go AoC 2021!")
-    // runDay(1, Day1);
-    // runDay(2, Day2);
-    // runDay(3, Day3);
-    runDay(4, Day4);
+    time({
+        runDay(1, Day1);
+        runDay(2, Day2);
+        runDay(3, Day3);
+        runDay(4, Day4);
+        runDay(5, Day5);
+        println("\nTotal time: ")
+    })
     println("\nAnd ... done!")
 }
 
 def runNoPrintDay(day: Int, callable: DayTemplate[?]): Unit = {
     val dayInput = callable.parseInput();
-    val partOne = callable.partOne(dayInput);
-    val partTwo = callable.partTwo(dayInput);
+    val partOne  = callable.partOne(dayInput);
+    val partTwo  = callable.partTwo(dayInput);
 }
 
 def runDay(day: Int, callable: DayTemplate[?]): Unit = {
