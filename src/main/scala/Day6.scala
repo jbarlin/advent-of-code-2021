@@ -16,28 +16,23 @@ object Day6 extends DayTemplate[Map[Int, Long]] {
             .map((p) => (p._1, p._2.toLong))
     }
 
-    def convertMap(input: Map[Int, Long]): Map[Int, Long] = {
-        input
+    @tailrec
+    def iterate(input: Map[Int, Long], count: Int): Long = {
+        val nMap = input
             .foldLeft(Map.empty[Int, Long])((acc, pairToAdd) => {
-                val count = pairToAdd._2;
-                val name  = pairToAdd._1
+                val (count, name) = (pairToAdd._2, pairToAdd._1);
                 if (name == 0) {
                     acc + ((6, count + acc.getOrElse(6, 0L))) + ((8, count))
-                } else if (name == 7)
-                {
+                }
+                else if (name == 7) {
                     acc + ((6, count + acc.getOrElse(6, 0L)))
                 }
                 else {
                     acc + ((name - 1, count))
                 }
             })
-    }
-
-    @tailrec
-    def iterate(input: Map[Int, Long], count: Int): Map[Int, Long] = {
-        val nMap = convertMap(input)
         if (count == 1) {
-            nMap
+            nMap.map(_._2).sum
         }
         else {
             iterate(nMap, count - 1)
@@ -46,10 +41,10 @@ object Day6 extends DayTemplate[Map[Int, Long]] {
     }
 
     def partOne(input: Map[Int, Long]): String = {
-        iterate(input, 80).map(_._2).sum.toString
+        iterate(input, 80).toString
     }
 
     def partTwo(input: Map[Int, Long]): String = {
-        iterate(input, 256).map(_._2).sum.toString
+        iterate(input, 256).toString
     }
 }
