@@ -31,7 +31,7 @@ object Day7 extends DayTemplate[List[Int]] {
     def costToMove(from: Int, to: Int): Int = {
         val start = Math.min(from, to)
         val end = Math.max(from, to)
-        (1 to (end - start)).sum
+        ((end - start) + (end-start-1))/2
     }
 
     def partTwo(input: List[Int]): String = {
