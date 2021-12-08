@@ -7,8 +7,8 @@ case class NoteEntry(val signalValues: List[String], val outputValues: List[Stri
         val charsInSeven: Set[Char] = signalValues.find(_.length == 3).get.toSet
         val charsInFour: Set[Char] = signalValues.find(_.length == 4).get.toSet
         val charsInEight: Set[Char] = signalValues.find(_.length == 7).get.toSet
-        val thoseWithFiveSegments: List[String] = signalValues.filter(_.length == 5)
-        val thoseWithSixSegments: List[String] = signalValues.filter(_.length == 6)
+        val thoseWithFiveSegments: Set[Set[Char]] = signalValues.filter(_.length == 5).map(_.toSet).toSet
+        val thoseWithSixSegments: Set[Set[Char]] = signalValues.filter(_.length == 6).map(_.toSet).toSet
         //So the top row would be the one in 7 that's not in 1?
         val topRow: Char = (charsInSeven -- charsInOne).head
         //So we can work out the topLeftAndCenterOptions:
@@ -26,9 +26,11 @@ case class NoteEntry(val signalValues: List[String], val outputValues: List[Stri
         }else{
             topLeftAndCenterOptions.head
         }
-        val charsInFive: Set[Char] = thoseWithFiveSegments.filter(_.contains(topLeft)).head.toSet
+        val (tCharsInFive: Set[Set[Char]], fiveSegmentsNotDigitFive: Set[Set[Char]]) = thoseWithFiveSegments.partition(_.contains(topLeft));
+        val charsInFive: Set[Char] = tCharsInFive.head
         //Hey we know the center, so the one with 6 digits without it can't be 0!
-        val charsInZero: Set[Char] = thoseWithSixSegments.find(!_.contains(center)).head.toSet
+        val (tCharsInZero: Set[Set[Char]], sixSegmentsNotDigitZero: Set[Set[Char]]) = thoseWithSixSegments.partition(!_.contains(center))
+        val charsInZero: Set[Char] = tCharsInZero.head
         //So the remaining two that have 5 chars is 2 and 3, and the difference is bottomRight and bottomLeft
         //bottomLeft = 0, 2, 6, 8
         //bottomRight = 0, 1, 3, 4, 5, 6, 7, 8, 9
@@ -36,15 +38,13 @@ case class NoteEntry(val signalValues: List[String], val outputValues: List[Stri
         val bottomRight: Char = charsInFive.intersect(charsInOne).head
         //Also this means we know 3, since it's the other 5 char one with the bottom right
         //And two would be the other one
-        val fiveSegmentsNotDigitFive = thoseWithFiveSegments.filter(_.toSet.diff(charsInFive).size > 0).map(_.toSet)
         val partitionFive = fiveSegmentsNotDigitFive.partition(_.contains(bottomRight))
         val charsInThree: Set[Char] = partitionFive._1.head
         val charsInTwo: Set[Char] = partitionFive._2.head
         //So we now know 0, 1, 2, 3, 4, 5, 7, and 8 - just 9 and 6 to go?
         //9 and 0 both overlap 1, and we know 0
         //And then that leaves... 6!
-        val sixSegmentsNotDigitSix = thoseWithSixSegments.filter(_.toSet.diff(charsInZero).size > 0).map(_.toSet)
-        val partitionSix = sixSegmentsNotDigitSix.partition(_.toSet.intersect(charsInOne).size == 2)
+        val partitionSix = sixSegmentsNotDigitZero.partition(_.toSet.intersect(charsInOne).size == 2)
         val charsInNine: Set[Char] = partitionSix._1.head
         val charsInSix: Set[Char] = partitionSix._2.head
 
