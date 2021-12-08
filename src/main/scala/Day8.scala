@@ -9,8 +9,6 @@ case class NoteEntry(val signalValues: List[String], val outputValues: List[Stri
         val charsInEight: Set[Char] = signalValues.find(_.length == 7).get.toSet
         val thoseWithFiveSegments: Set[Set[Char]] = signalValues.filter(_.length == 5).map(_.toSet).toSet
         val thoseWithSixSegments: Set[Set[Char]] = signalValues.filter(_.length == 6).map(_.toSet).toSet
-        //So the top row would be the one in 7 that's not in 1?
-        val topRow: Char = (charsInSeven -- charsInOne).head
         //So we can work out the topLeftAndCenterOptions:
         val topLeftAndCenterOptions: List[Char] = (charsInFour -- charsInOne).toList
         //And only 5 contains the upper left out of the ones that have 5 segments so I guess
