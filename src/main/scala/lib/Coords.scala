@@ -2,6 +2,7 @@ package lib
 
 import scala.compiletime.ops.boolean
 import org.apache.commons.lang3.builder.HashCodeBuilder
+import scala.collection.mutable.ListBuffer
 
 class Coords(val x: Int, val y: Int) {
     lazy val magnitude          = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
@@ -17,7 +18,7 @@ class Coords(val x: Int, val y: Int) {
         case _         => false
     }
     override def hashCode(): Int    = {
-        new HashCodeBuilder()
+        new HashCodeBuilder(923, 929)
             .append(this.x)
             .append(this.y)
             .toHashCode
@@ -30,13 +31,30 @@ class Coords(val x: Int, val y: Int) {
     }
     def compare(that: Coords)       = this.magnitude.compare(that.magnitude)
     override def toString(): String = "Coords(" + x + "," + y + ")"
+
+    def aroundMe(
+        min: (Int, Int) = (0, 0),
+        max: (Int, Int) = (Int.MaxValue, Int.MaxValue),
+        diagonals: Boolean = false
+    ): List[Coords] = {
+        val tmp = ((x - 1) to (x + 1))
+            .flatMap(xI => ((y - 1) to (y + 1)).map(xI -> _))
+            .filter(i => i._1 >= min._1 && i._1 <= max._1 && i._2 >= min._2 && i._2 <= max._2)
+            .filter(p => (diagonals) || (p._1 == x || p._2 == y))
+            .filterNot(p => p._1 == x && p._2 == y)
+        tmp.map(p => Coords(p._1)(p._2))
+            .toList
+    }
+
+    def makePlus(maxX: Int, maxY: Int) = aroundMe((0, 0), (maxX, maxY), false)
 }
 object Orientations extends Enumeration {
     type Orientation = Value
     val Clockwise, Counterclockwise, Colinear = Value
 }
 object Coords                        {
-    def apply(x: Int)(y: Int) = new Coords(x, y)
+    def apply(x: Int)(y: Int)                                          = new Coords(x, y)
+    def byY(y: Int)(x: Int)                                            = Coords(x)(y)
     def onSegment(pointA: Coords, pointB: Coords): (Coords) => Boolean = (pointToTest: Coords) => {
         pointToTest.x <= Math.max(pointA.x, pointB.x) && pointToTest.x >= Math.min(pointA.x, pointB.x) &&
         pointToTest.y <= Math.max(pointA.y, pointB.y) && pointToTest.y >= Math.min(pointA.y, pointB.y)

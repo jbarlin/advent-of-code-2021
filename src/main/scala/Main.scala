@@ -12,6 +12,7 @@ import lib.DayTemplate
         runDay(6, Day6);
         runDay(7, Day7);
         runDay(8, Day8);
+        runDay(9, Day9);
         print("\nTotal time: ")
     })
     println("\nAnd ... done!")
