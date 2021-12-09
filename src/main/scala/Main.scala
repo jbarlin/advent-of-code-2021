@@ -4,15 +4,15 @@ import lib.DayTemplate
 @main def hello: Unit = {
     println("Let's go AoC 2021!")
     time({
-        runDay(1, Day1);
-        runDay(2, Day2);
-        runDay(3, Day3);
-        runDay(4, Day4);
-        runDay(5, Day5);
-        runDay(6, Day6);
-        runDay(7, Day7);
-        runDay(8, Day8);
-        runDay(9, Day9);
+        runDay(1, Day01);
+        runDay(2, Day02);
+        runDay(3, Day03);
+        runDay(4, Day04);
+        runDay(5, Day05);
+        runDay(6, Day06);
+        runDay(7, Day07);
+        runDay(8, Day08);
+        runDay(9, Day09);
         print("\nTotal time: ")
     })
     println("\nAnd ... done!")

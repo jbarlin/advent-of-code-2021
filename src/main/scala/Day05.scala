@@ -69,7 +69,7 @@ object VentPath {
     }
 }
 
-object Day5 extends DayTemplate[List[VentPath]] {
+object Day05 extends DayTemplate[List[VentPath]] {
     def parseInput(): List[VentPath] = {
         Source
             .fromResource("day5.txt")

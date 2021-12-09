@@ -64,7 +64,7 @@ case class NoteEntry(val signalValues: List[String], val outputValues: List[Stri
     }
 }
 
-object Day8 extends DayTemplate[Iterable[NoteEntry]] {
+object Day08 extends DayTemplate[Iterable[NoteEntry]] {
     def parseInput(): Iterable[NoteEntry] = {
         Source
             .fromResource("day8.txt")

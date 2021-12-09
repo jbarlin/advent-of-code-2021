@@ -6,7 +6,7 @@ import lib.UpSubMovement
 import lib.DownSubMovement
 import lib.Coords
 
-object Day2 extends DayTemplate[List[SubMovement]] {
+object Day02 extends DayTemplate[List[SubMovement]] {
 
     def parseInput(): List[SubMovement] = {
         Source

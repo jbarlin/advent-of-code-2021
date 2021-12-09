@@ -42,7 +42,7 @@ class BingoGameBuilder(val boards: List[BingoBoard] = List.empty, val lines: Lis
 
 class BingoGame(val plays: Plays, val boards: List[BingoBoard])                                            {}
 
-object Day4 extends DayTemplate[BingoGame] {
+object Day04 extends DayTemplate[BingoGame] {
     def parseInput(): BingoGame = {
         val lines     = Source
             .fromResource("day4.txt")

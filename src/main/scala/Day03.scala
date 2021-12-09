@@ -86,7 +86,7 @@ class BinarySearcher(
     }
 }
 
-object Day3 extends DayTemplate[List[List[Int]]] {
+object Day03 extends DayTemplate[List[List[Int]]] {
     def parseInput() = {
         Source
             .fromResource("day3.txt")

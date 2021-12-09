@@ -3,7 +3,7 @@ import lib.Coords
 import scala.io.Source
 import scala.annotation.tailrec
 
-object Day9 extends DayTemplate[Map[Coords, Int]] {
+object Day09 extends DayTemplate[Map[Coords, Int]] {
     def parseInput(): Map[Coords, Int] = {
         Source
             .fromResource("day9.txt")
