@@ -2,7 +2,6 @@ package lib
 
 import scala.compiletime.ops.boolean
 import org.apache.commons.lang3.builder.HashCodeBuilder
-import scala.collection.mutable.ListBuffer
 
 class Coords(val x: Int, val y: Int) {
     lazy val magnitude          = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
