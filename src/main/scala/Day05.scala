@@ -3,8 +3,9 @@ import lib.{Coords, DayTemplate, LinearVector}
 
 import scala.annotation.tailrec
 import scala.io.Source
+import lib.RecursiveUtils
 
-final object Day05 extends DayTemplate[List[VentPath]] {
+object Day05 extends DayTemplate[List[VentPath]] {
     def parseInput(): List[VentPath] = {
         Source
             .fromResource("day5.txt")
@@ -16,16 +17,27 @@ final object Day05 extends DayTemplate[List[VentPath]] {
     }
 
     def partOne(input: List[VentPath]): String = {
-        input
-            .filter(p => !p.isDiagonal)
-            .foldLeft(Map.empty[Coords, Int])((acc, app) => app.apply(acc))
-            .count(v => v._2 > 1)
-            .toString
+        partApply(input.filter(p => !p.isDiagonal))
     }
 
     def partTwo(input: List[VentPath]): String = {
-        input
-            .foldLeft(Map.empty[Coords, Int])((acc, app) => app.apply(acc))
+        partApply(input)
+    }
+
+    private def stackOp(state: Map[Coords, Int], left: Iterable[VentPath], s: Set[VentPath]) = {
+        val c = left.head
+        (c.apply(state), left.tail, s)
+    }
+
+    private def partApply(operateOn: List[VentPath]): String = {
+        RecursiveUtils
+            .applyStackOperationsToMap(
+              Map.empty[Coords, Int],
+              operateOn,
+              stackOp,
+              Set.empty
+            )
+            ._1
             .count(v => v._2 > 1)
             .toString
     }

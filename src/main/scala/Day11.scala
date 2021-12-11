@@ -11,9 +11,9 @@ final object Day11 extends DayTemplate[Map[Coords, Int]] {
             .filter(!_.isBlank)
             .zipWithIndex
             .flatMap(line => {
-                val lineNo: Int = line._2
+                val lineNo: Int      = line._2
                 val lineText: String = line._1
-                val coodsBuilder = Coords.byY(lineNo);
+                val coodsBuilder     = Coords.byY(lineNo);
                 lineText.toList.zipWithIndex
                     .map(digits => coodsBuilder(digits._2) -> digits._1.toString.toInt)
             })
@@ -31,11 +31,12 @@ final object Day11 extends DayTemplate[Map[Coords, Int]] {
     }
 
     def partTwo(input: Map[Coords, Int]): String = {
+        val sz          = input.size
         val prepForNext = (inp: (Map[Coords, Int], Set[Coords])) => {
             (inp._1, Set.empty[Coords])
         }
-        val condition = (inp: (Map[Coords, Int], Set[Coords])) => {
-            inp._1.size == inp._2.size
+        val condition   = (inp: (Map[Coords, Int], Set[Coords]), count: Int) => {
+            sz == inp._2.size
         }
         RecursiveUtils
             .countUntilConditionWithPrep((input, Set.empty), performFlashingOperations, condition, prepForNext)
@@ -43,42 +44,48 @@ final object Day11 extends DayTemplate[Map[Coords, Int]] {
     }
 
     private def performFlashingOperations(inp: (Map[Coords, Int], Set[Coords])) = {
-        val currMap = addOne(inp._1)
+        val currMap         = inp._1.map(p => p._1 -> (p._2 + 1))
         val afterAllFlashes = RecursiveUtils.repeatUntilNoChanges((currMap, Set.empty), performFlashesStep);
-        val flatten = flattenByFlashed(afterAllFlashes._1, afterAllFlashes._2)
+        val flatten         = flattenByFlashed(afterAllFlashes._1, afterAllFlashes._2)
         (flatten, afterAllFlashes._2)
     }
 
-    private def addOne(input: Map[Coords, Int]): Map[Coords, Int] = {
-        input.map(p => p._1 -> (p._2 + 1))
+    private def applyFlashies(
+        stateMap: Map[Coords, Int],
+        remainingToApply: Iterable[Coords],
+        flashed: Set[Coords]
+    ): (Map[Coords, Int], Iterable[Coords], Set[Coords]) = {
+        val currFlashing    = remainingToApply.head
+        val validNeighbours = currFlashing.aroundWithDiag
+            .filter(!flashed.contains(_))
+            .filter(stateMap.contains(_))
+        val neighbourSubmap = validNeighbours.map(neighbour => neighbour -> stateMap.get(neighbour).map(_ + 1).get)
+        val nextMap         = stateMap ++ neighbourSubmap + (currFlashing -> 0)
+        val nextFlashed     = flashed + currFlashing
+        (nextMap, remainingToApply.tail, nextFlashed)
+
     }
 
     private def performFlashesStep(input: (Map[Coords, Int], Set[Coords])): (Map[Coords, Int], Set[Coords]) = {
-        val state = input._1
-        val flashed = input._2
-        state
+        val state       = input._1
+        val flashed     = input._2
+        val needToFlash = state
             .filter(c => c._2 > 9)
             .filterNot(c => flashed.contains(c._1))
             .map(c => c._1)
-            .foldLeft((state, flashed))((startingState, currFlashing) => {
-                val cMap = startingState._1
-                val neighbours =
-                    currFlashing.aroundWithDiag().filterNot(startingState._2.contains(_)).filter(cMap.contains(_))
-                val nMap = cMap.filter(p => p._1 != currFlashing && !neighbours.contains(p._1)) ++
-                    neighbours.map(p => p -> cMap.get(p).map(_ + 1).get) +
-                    (currFlashing -> 0)
-                (nMap, startingState._2 + currFlashing)
-            })
+        RecursiveUtils.applyStackOperationsToMap(state, needToFlash, applyFlashies, flashed)
     }
 
     private def flattenByFlashed(input: Map[Coords, Int], flashed: Set[Coords]): Map[Coords, Int] = {
         input.map(p =>
-            p._1 -> (if (flashed.contains(p._1)) {
-                0
-            }
-            else {
-                p._2
-            })
+            p._1 -> (
+              if (flashed.contains(p._1)) {
+                  0
+              }
+              else {
+                  p._2
+              }
+            )
         )
     }
 }

@@ -44,12 +44,11 @@ final class Coords(val x: Int, val y: Int) {
         tmp.map(p => Coords(p._1)(p._2))
             .toList
     }
-
-    def makePlus(maxX: Int, maxY: Int) = aroundMe((0, 0), (maxX, maxY), false)
-    def aroundWithDiag(min: (Int, Int) = (0,0), max: (Int, Int) = (Int.MaxValue, Int.MaxValue)) = aroundMe(min, max, true)
+    lazy val aroundWithDiag = aroundMe((0,0), (Int.MaxValue, Int.MaxValue), true)
+    lazy val aroundNoDiag = aroundMe((0,0), (Int.MaxValue, Int.MaxValue), false)
 }
 
-final object Coords                        {
+object Coords                        {
     def apply(x: Int)(y: Int)                                          = new Coords(x, y)
     def byY(y: Int)(x: Int)                                            = Coords(x)(y)
     def onSegment(pointA: Coords, pointB: Coords): (Coords) => Boolean = (pointToTest: Coords) => {

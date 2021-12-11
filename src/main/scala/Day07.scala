@@ -41,5 +41,3 @@ final object Day07 extends DayTemplate[List[Int]] {
         ((end - start) + (end - start - 1)) / 2
     }
 }
-
-// 352
