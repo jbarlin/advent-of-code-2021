@@ -1,6 +1,6 @@
 package lib
 
-class LinearVector(val m: Int, val b: Int) {
+final class LinearVector(val m: Int, val b: Int) {
     def atX(x: Int): Int = {
         m * x + b
     }
@@ -20,7 +20,7 @@ class LinearVector(val m: Int, val b: Int) {
     }
 }
 
-object LinearVector {
+final object LinearVector {
     def apply(pointA: Coords): (Coords => LinearVector) = (pointB: Coords) => {
         val dx = pointA.x - pointB.x
         val dy = pointA.y - pointB.y

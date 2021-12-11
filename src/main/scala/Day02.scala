@@ -1,12 +1,9 @@
 import scala.io.Source
 import lib.DayTemplate
-import lib.SubMovement
-import lib.ForwardSubMovement
-import lib.UpSubMovement
-import lib.DownSubMovement
 import lib.Coords
+import lib.day2.{DownSubMovement, ForwardSubMovement, SubMovement, UpSubMovement}
 
-object Day02 extends DayTemplate[List[SubMovement]] {
+final object Day02 extends DayTemplate[List[SubMovement]] {
 
     def parseInput(): List[SubMovement] = {
         Source

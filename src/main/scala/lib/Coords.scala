@@ -3,7 +3,7 @@ package lib
 import scala.compiletime.ops.boolean
 import org.apache.commons.lang3.builder.HashCodeBuilder
 
-class Coords(val x: Int, val y: Int) {
+final class Coords(val x: Int, val y: Int) {
     lazy val magnitude          = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
     def +(that: Coords): Coords = {
         new Coords(this.x + that.x, this.y + that.y);
@@ -48,11 +48,8 @@ class Coords(val x: Int, val y: Int) {
     def makePlus(maxX: Int, maxY: Int) = aroundMe((0, 0), (maxX, maxY), false)
     def aroundWithDiag(min: (Int, Int) = (0,0), max: (Int, Int) = (Int.MaxValue, Int.MaxValue)) = aroundMe(min, max, true)
 }
-object Orientations extends Enumeration {
-    type Orientation = Value
-    val Clockwise, Counterclockwise, Colinear = Value
-}
-object Coords                        {
+
+final object Coords                        {
     def apply(x: Int)(y: Int)                                          = new Coords(x, y)
     def byY(y: Int)(x: Int)                                            = Coords(x)(y)
     def onSegment(pointA: Coords, pointB: Coords): (Coords) => Boolean = (pointToTest: Coords) => {

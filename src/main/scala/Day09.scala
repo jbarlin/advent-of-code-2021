@@ -1,9 +1,9 @@
-import lib.DayTemplate
-import lib.Coords
-import scala.io.Source
-import scala.annotation.tailrec
+import lib.{Coords, DayTemplate}
 
-object Day09 extends DayTemplate[Map[Coords, Int]] {
+import scala.annotation.tailrec
+import scala.io.Source
+
+final object Day09 extends DayTemplate[Map[Coords, Int]] {
     def parseInput(): Map[Coords, Int] = {
         Source
             .fromResource("day9.txt")
@@ -27,50 +27,34 @@ object Day09 extends DayTemplate[Map[Coords, Int]] {
     def partOne(input: Map[Coords, Int]): String = {
         input
             .map(part => {
-                val list = part._1.aroundMe((0,0), (Int.MaxValue, Int.MaxValue), false)
+                val list = part._1.aroundMe((0, 0), (Int.MaxValue, Int.MaxValue), false)
                 (list, part._2)
             })
             .filter(part => {
                 part._1
-                .forall(
-                    c => input.get(c).getOrElse(Int.MaxValue) > part._2
-                )
+                    .forall(
+                        c => input.get(c).getOrElse(Int.MaxValue) > part._2
+                    )
             })
-            .map(_._2+1)
+            .map(_._2 + 1)
             .sum
             .toString
     }
-    @tailrec
-    def findAllUntilNine(originalMap: Map[Coords, Int], checking: Set[Coords], checked: Set[Coords]): Set[Coords] = {
-        if (checking.isEmpty){
-            checked
-        }else{
-            val top = checking.head
-            val remaining = checking - top
-            val cSet = if (originalMap.get(top).getOrElse(9) < 9) {
-                    Set(top)
-                }else{
-                    Set.empty
-                }
-            findAllUntilNine(originalMap, remaining ++ (cSet.flatMap(c => c.aroundMe())) -- checked, checked ++ cSet )
-        }
-    }
 
     def partTwo(input: Map[Coords, Int]): String = {
-        val smallest: List[Coords] = input
+        input
             .map(part => {
-                val list = part._1.aroundMe((0,0), (Int.MaxValue, Int.MaxValue), false)
+                val list = part._1.aroundMe((0, 0), (Int.MaxValue, Int.MaxValue), false)
                 ((list, part._1), part._2)
             })
             .filter(part => {
                 part._1._1
-                .forall(
-                    c => input.get(c).getOrElse(Int.MaxValue) > part._2
-                )
+                    .forall(
+                        c => input.get(c).getOrElse(Int.MaxValue) > part._2
+                    )
             })
             .map(_._1._2)
             .toList
-        smallest
             .map(coord => {
                 findAllUntilNine(input, coord.aroundMe().toSet, Set(coord)).size
             })
@@ -78,5 +62,21 @@ object Day09 extends DayTemplate[Map[Coords, Int]] {
             .take(3)
             .reduce((a, b) => a * b)
             .toString
+    }
+
+    @tailrec
+    private def findAllUntilNine(originalMap: Map[Coords, Int], checking: Set[Coords], checked: Set[Coords]): Set[Coords] = {
+        if (checking.isEmpty) {
+            checked
+        } else {
+            val top = checking.head
+            val remaining = checking - top
+            val cSet = if (originalMap.get(top).getOrElse(9) < 9) {
+                Set(top)
+            } else {
+                Set.empty
+            }
+            findAllUntilNine(originalMap, remaining ++ (cSet.flatMap(c => c.aroundMe())) -- checked, checked ++ cSet)
+        }
     }
 }

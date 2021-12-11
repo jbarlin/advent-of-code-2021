@@ -1,7 +1,9 @@
-import scala.io.Source
 import lib.DayTemplate
+
 import scala.annotation.tailrec
-object Day06 extends DayTemplate[Map[Int, Long]] {
+import scala.io.Source
+
+final object Day06 extends DayTemplate[Map[Int, Long]] {
     def parseInput(): Map[Int, Long] = {
         Source
             .fromResource("day6.txt")
@@ -16,8 +18,16 @@ object Day06 extends DayTemplate[Map[Int, Long]] {
             .map((p) => (p._1, p._2.toLong))
     }
 
+    def partOne(input: Map[Int, Long]): String = {
+        iterate(input, 80).toString
+    }
+
+    def partTwo(input: Map[Int, Long]): String = {
+        iterate(input, 256).toString
+    }
+
     @tailrec
-    def iterate(input: Map[Int, Long], count: Int): Long = {
+    private def iterate(input: Map[Int, Long], count: Int): Long = {
         val nMap = input
             .foldLeft(Map.empty[Int, Long])((acc, pairToAdd) => {
                 val (count, name) = (pairToAdd._2, pairToAdd._1);
@@ -38,13 +48,5 @@ object Day06 extends DayTemplate[Map[Int, Long]] {
             iterate(nMap, count - 1)
         }
 
-    }
-
-    def partOne(input: Map[Int, Long]): String = {
-        iterate(input, 80).toString
-    }
-
-    def partTwo(input: Map[Int, Long]): String = {
-        iterate(input, 256).toString
     }
 }

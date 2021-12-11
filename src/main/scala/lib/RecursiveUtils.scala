@@ -1,7 +1,7 @@
 package lib
 import scala.annotation.tailrec
 
-object RecursiveUtils {
+final object RecursiveUtils {
     @tailrec
     def repeatUntilNoChanges[T](currAt: T, op: T => T): T = {
         val next = op.apply(currAt);
@@ -13,8 +13,8 @@ object RecursiveUtils {
         }
     }
 
-    def countUntilConditionWithPrep[T](currAt: T, op: T => T, condition: T => Boolean, prepForNext: T => T = (a: T) => a): Int = {
-        countUntilConditionWithPrepRec(currAt, op, condition, 0, prepForNext)
+    def countUntilConditionWithPrep[T](start: T, op: T => T, condition: T => Boolean, prepForNext: T => T = (a: T) => a): Int = {
+        countUntilConditionWithPrepRec(start, op, condition, 0, prepForNext)
     }
 
     @tailrec
