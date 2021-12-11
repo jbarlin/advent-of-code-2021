@@ -46,6 +46,7 @@ class Coords(val x: Int, val y: Int) {
     }
 
     def makePlus(maxX: Int, maxY: Int) = aroundMe((0, 0), (maxX, maxY), false)
+    def aroundWithDiag(min: (Int, Int) = (0,0), max: (Int, Int) = (Int.MaxValue, Int.MaxValue)) = aroundMe(min, max, true)
 }
 object Orientations extends Enumeration {
     type Orientation = Value
