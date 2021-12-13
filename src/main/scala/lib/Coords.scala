@@ -4,6 +4,23 @@ import scala.compiletime.ops.boolean
 import org.apache.commons.lang3.builder.HashCodeBuilder
 
 final class Coords(val x: Int, val y: Int) {
+
+    def foldAround(around: (Option[Int], Option[Int])): Coords = {
+        val nX = around._1
+            .map(p =>
+                if (x > p) { 2 * p - x }
+                else { x }
+            )
+            .getOrElse(x)
+        val nY = around._2
+            .map(p =>
+                if (y > p) { 2 * p - y }
+                else { y }
+            )
+            .getOrElse(y)
+        Coords(nX)(nY)
+    }
+
     lazy val magnitude          = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
     def +(that: Coords): Coords = {
         new Coords(this.x + that.x, this.y + that.y);
@@ -41,14 +58,13 @@ final class Coords(val x: Int, val y: Int) {
             .filter(i => i._1 >= min._1 && i._1 <= max._1 && i._2 >= min._2 && i._2 <= max._2)
             .filter(p => (diagonals) || (p._1 == x || p._2 == y))
             .filterNot(p => p._1 == x && p._2 == y)
-        tmp.map(p => Coords(p._1)(p._2))
-            .toList
+        tmp.map(p => Coords(p._1)(p._2)).toList
     }
-    lazy val aroundWithDiag = aroundMe((0,0), (Int.MaxValue, Int.MaxValue), true)
-    lazy val aroundNoDiag = aroundMe((0,0), (Int.MaxValue, Int.MaxValue), false)
+    lazy val aroundWithDiag = aroundMe((0, 0), (Int.MaxValue, Int.MaxValue), true)
+    lazy val aroundNoDiag   = aroundMe((0, 0), (Int.MaxValue, Int.MaxValue), false)
 }
 
-object Coords                        {
+object Coords {
     def apply(x: Int)(y: Int)                                          = new Coords(x, y)
     def byY(y: Int)(x: Int)                                            = Coords(x)(y)
     def onSegment(pointA: Coords, pointB: Coords): (Coords) => Boolean = (pointToTest: Coords) => {
@@ -79,6 +95,23 @@ object Coords                        {
         (o2 == Orientations.Colinear && onSegment(start1, end2)(end1)) ||
         (o3 == Orientations.Colinear && onSegment(start1, start1)(end2)) ||
         (o4 == Orientations.Colinear && onSegment(start1, end1)(end2))
+    }
+
+    def mapToString(coords: Set[Coords]): String = {
+        val maxX = coords.map(c => c.x).max
+        val maxY = coords.map(c => c.y).max
+        val minX = coords.map(c => c.x).min
+        val minY = coords.map(c => c.y).min
+        (minY to maxY).foldLeft("")((acc, ycoord) => {
+            val coordByY = Coords.byY(ycoord)
+            acc +
+                (minX to maxX).foldLeft("")((run, xcoord) => {
+                    run + (if (coords.contains(coordByY(xcoord))) { "#" }
+                           else { "." })
+                })
+                + "\n"
+        })
+
     }
 
 }
