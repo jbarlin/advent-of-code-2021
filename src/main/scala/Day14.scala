@@ -34,10 +34,11 @@ class Polymer(elemPairs: Map[(Char, Char), Long], last: Char) {
             acc + (firstE  -> (acc.getOrElse(firstE, 0L) + count))
         })
         .map(p => p._1 -> (if (p._1 == last){p._2 + 1}else{p._2}))
+        .map(_._2)
         
 
-    def mostCommonCount  = elemCounts.map(_._2).max
-    def leastCommonCount = elemCounts.map(_._2).min
+    def mostCommonCount  = elemCounts.max
+    def leastCommonCount = elemCounts.min
 }
 
 object Polymer {
