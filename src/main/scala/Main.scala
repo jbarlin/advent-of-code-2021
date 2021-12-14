@@ -1,5 +1,5 @@
 import java.util.concurrent.TimeUnit
-import lib.DayTemplate
+import lib.{DayTemplate, ExtendingDayTemplate}
 
 @main def hello: Unit = {
     println("Let's go AoC 2021!")
@@ -16,16 +16,11 @@ import lib.DayTemplate
         // runDay(10, Day10);
         // runDay(11, Day11);
         // runDay(12, Day12);
-        runDay(13, Day13);
+        // runDay(13, Day13);
+        runDayExtended(14, Day14);
         print("\nTotal time: ")
     })
     println("\nAnd ... done!")
-}
-
-def runNoPrintDay(day: Int, callable: DayTemplate[?]): Unit = {
-    val dayInput = callable.parseInput();
-    val partOne  = callable.partOne(dayInput);
-    val partTwo  = callable.partTwo(dayInput);
 }
 
 def runDay(day: Int, callable: DayTemplate[?]): Unit = {
@@ -35,6 +30,16 @@ def runDay(day: Int, callable: DayTemplate[?]): Unit = {
     println(time(callable.partOne(dayInput)))
     print("\tPart 2:")
     println(time(callable.partTwo(dayInput)))
+}
+
+def runDayExtended[T, A](day: Int, callable: ExtendingDayTemplate[T, A]): Unit = {
+    print("Day " + day + ":\n\tParse:")
+    val dayInput = time(callable.parseInput())
+    print("\n\tPart 1:")
+    val p1: (String, A) = time(callable.partOne(dayInput))
+    println(p1._1)
+    print("\tPart 2:")
+    println(time(callable.partTwo(dayInput, p1._2)))
 }
 
 def time[R](block: => R): R = {
