@@ -106,8 +106,8 @@ object Coords {
             val coordByY = Coords.byY(ycoord)
             acc +
                 (minX to maxX).foldLeft("")((run, xcoord) => {
-                    run + (if (coords.contains(coordByY(xcoord))) { "#" }
-                           else { "." })
+                    run + (if (coords.contains(coordByY(xcoord))) { "█" }
+                           else { " " })
                 })
                 + "\n"
         })
