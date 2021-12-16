@@ -26,6 +26,14 @@ final class Coords(val x: Int, val y: Int) {
         new Coords(this.x + that.x, this.y + that.y);
     }
 
+    def addX(x: Int): Coords = {
+        this + Coords(x)(0)
+    }
+
+    def addY(y: Int): Coords = {
+        this + Coords(0)(y)
+    }
+
     def -(that: Coords): Coords     = {
         new Coords(this.x - that.x, this.y - that.y);
     }
@@ -67,14 +75,14 @@ final class Coords(val x: Int, val y: Int) {
 object Coords {
     def apply(x: Int)(y: Int)                                          = new Coords(x, y)
     def byY(y: Int)(x: Int)                                            = Coords(x)(y)
-    def onSegment(pointA: Coords, pointB: Coords): (Coords) => Boolean = (pointToTest: Coords) => {
-        pointToTest.x <= Math.max(pointA.x, pointB.x) && pointToTest.x >= Math.min(pointA.x, pointB.x) &&
-        pointToTest.y <= Math.max(pointA.y, pointB.y) && pointToTest.y >= Math.min(pointA.y, pointB.y)
+    def onSegment(poIntA: Coords, poIntB: Coords): (Coords) => Boolean = (poIntToTest: Coords) => {
+        poIntToTest.x <= Math.max(poIntA.x, poIntB.x) && poIntToTest.x >= Math.min(poIntA.x, poIntB.x) &&
+        poIntToTest.y <= Math.max(poIntA.y, poIntB.y) && poIntToTest.y >= Math.min(poIntA.y, poIntB.y)
     }
 
-    def orientation(pointA: Coords, pointB: Coords): (Coords) => Orientations.Orientation = (pointC: Coords) => {
-        val orientation = (pointB.y - pointA.y) * (pointC.x - pointB.x) -
-            (pointB.x - pointA.x) * (pointC.y - pointB.y);
+    def orientation(poIntA: Coords, poIntB: Coords): (Coords) => Orientations.Orientation = (poIntC: Coords) => {
+        val orientation = (poIntB.y - poIntA.y) * (poIntC.x - poIntB.x) -
+            (poIntB.x - poIntA.x) * (poIntC.y - poIntB.y);
 
         orientation match {
             case 0          => Orientations.Colinear
