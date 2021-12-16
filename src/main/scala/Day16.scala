@@ -54,21 +54,19 @@ object Day16 extends DayTemplate[HexPacket] {
 
     private def readLiteral(version: Long, typeId: Long, input: T): (Int, Literal) = {
         val app    = Iterator
-            .iterate((6, List.empty[Long], 1))((read: Int, lst: List[Long], hd: Int) => {
+            .iterate((6, List.empty[Int], 1))((read: Int, lst: List[Int], hd: Int) => {
                 val rem  = input.drop(read)
-                val nInt = parseBin(rem.drop(1).take(4))
-                (read + 5, lst ::: nInt :: Nil, rem.head)
+                (read + 5, lst ++ rem.drop(1).take(4), rem.head)
             })
             .dropWhile(_._3 == 1)
             .next()
-        val fnlNum = app._2.foldLeft(0L)((a, b) => a * 10 + b)
-        (app._1, new Literal(version, typeId, fnlNum))
+        (app._1, new Literal(version, typeId, parseBin(app._2)))
     }
 
     private def operatorByCount(version: Long, typeId: Long, rem: T): (Int, Operator) = {
         val howManyToRead         = parseBin(rem.take(11));
         val (nowRead, subPackets) = Iterator
-            .iterate((0, List.empty[HexPacket]))(readerNode(rem.drop(11)))
+            .iterate((0, List.empty[HexPacket]))(readSubNode(rem.drop(11)))
             .drop(howManyToRead.toInt)
             .next()
         (nowRead + 7 + 11, new Operator(version, typeId, subPackets))
@@ -78,13 +76,13 @@ object Day16 extends DayTemplate[HexPacket] {
         //The next 15 bits denote how many bits to send through translate to get subpackets?
         val howManyBits           = parseBin(rem.take(15))
         val (nowRead, subPackets) = Iterator
-            .iterate((0, List.empty[HexPacket]))(readerNode(rem.drop(15)))
+            .iterate((0, List.empty[HexPacket]))(readSubNode(rem.drop(15)))
             .dropWhile(_._1 < howManyBits)
             .next()
         (nowRead + 7 + 15, new Operator(version, typeId, subPackets))
     }
 
-    private def readerNode(input: T)(read: Int, app: List[HexPacket]) = {
+    private def readSubNode(input: T)(read: Int, app: List[HexPacket]) = {
         val (additRead, nextPacket) = translate(input.drop(read))
         (read + additRead, app ::: nextPacket :: Nil)
     }
@@ -96,7 +94,7 @@ object Day16 extends DayTemplate[HexPacket] {
         }
     }
 
-    def applyOperations(hex: HexPacket): Long = {
+    def applyOperations(hex: HexPacket): BigInt = {
         hex match {
             case Literal(_, _, value)         => value
             case Operator(_, 0, subPackets) => subPackets.map(applyOperations).sum
@@ -112,12 +110,12 @@ object Day16 extends DayTemplate[HexPacket] {
 
     def parseInput(): HexPacket = {
         translate(
-        //   Source
-        //       .fromResource("day16.txt")
-        //       .getLines
-        //       .toList
-        //       .head
-        "9C0141080250320F1802104A08".flatMap(hToB)
+          Source
+              .fromResource("day16.txt")
+              .getLines
+              .toSeq
+              .head
+              .flatMap(hToB)
               .map(_.asDigit)
         )._2
     }
@@ -128,6 +126,7 @@ object Day16 extends DayTemplate[HexPacket] {
 
     def partTwo(input: HexPacket): String = {
         //16353679177 too low
-        applyOperations(input).toString
+        val op: BigInt = applyOperations(input)
+        op.toString
     }
 }
