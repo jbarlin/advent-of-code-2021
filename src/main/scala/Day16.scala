@@ -4,18 +4,18 @@ import scala.util.Try
 
 abstract trait HexPacket
 
-final case class Literal(val v: Int, val i: Int, val value: Long)                  extends HexPacket
-final case class Operator(val v: Int, val i: Int, val subPackets: List[HexPacket]) extends HexPacket
+final case class Literal(val v: Long, val i: Long, val value: Long)                  extends HexPacket
+final case class Operator(val v: Long, val i: Long, val subPackets: List[HexPacket]) extends HexPacket
 
 type T = Seq[Int]
 
-object Day16 extends DayTemplate[T] {
+object Day16 extends DayTemplate[HexPacket] {
 
-    private def parseBin(in: Seq[Int]): Int = {
-        Integer.parseInt(in.foldLeft(0)((a, b) => a * 10 + b).toString, 2)
+    private def parseBin(in: Seq[Int]): Long = {
+        java.lang.Long.parseLong(in.foldLeft("")((a, b) => a + b.toString), 2)
     }
 
-    val hToB = Map(
+    private val hToB = Map(
       '0' -> "0000",
       '1' -> "0001",
       '2' -> "0010",
@@ -34,90 +34,100 @@ object Day16 extends DayTemplate[T] {
       'F' -> "1111"
     )
 
-    def translate(input: T): (Int, HexPacket) = {
+    private def translate(input: T): (Int, HexPacket) = {
         val version = parseBin(input.slice(0, 3))
         val typeId  = parseBin(input.slice(3, 6))
-        val rem     = input.drop(6)
         if (typeId == 4) {
-            val (lit, read) = makeLiteral(version, typeId, rem)
-            (read, lit)
+            readLiteral(version, typeId, input)
         }
         else {
+            val rem     = input.drop(6)
             val lTypeId = rem.head
             if (lTypeId == 0) {
-                //The next 15 bits denote how many bits to send through translate to get subpackets?
-                val howManyBits           = parseBin(rem.tail.take(15)) + 16
-                val (nowRead, subPackets) = Iterator
-                    .iterate((16, List.empty[HexPacket]))
-                    ((read, app) => {
-                        val (additRead, nextPacket) = translate(rem.drop(read))
-                        (read + additRead, app ::: nextPacket :: Nil)
-                    })
-                    .dropWhile(b => rem.size > b._1 + 8)
-                    .dropWhile(_._1 < howManyBits)
-                    .next()
-                (nowRead, new Operator(version, typeId, subPackets))
+                operatorByBits(version, typeId, rem.tail)
             }
             else {
-                val howManyToRead = parseBin(rem.tail.take(11)) + 12;
-                val (nowRead, subPackets) = Iterator.iterate((12, List.empty[HexPacket]))
-                    ((read, app) => {
-                        val (additRead, nextPacket) = translate(rem.drop(read))
-                        (read + additRead, app ::: nextPacket :: Nil)
-                    })
-                    .dropWhile(b => rem.size > b._1 + 8)
-                    .drop(howManyToRead)
-                    .next()
-                (nowRead, new Operator(version, typeId, subPackets))
+                operatorByCount(version, typeId, rem.tail)
             }
         }
-
     }
 
-    private def makeLiteral(
-        v: Int,
-        i: Int,
-        input: T,
-        acc: List[Int] = List.empty,
-        bitsRead: Int = 6
-    ): (Literal, Int) = {
-        val myNum      = parseBin(input.slice(1, 6))
-        val myBitsRead = bitsRead + 5
-        if (input.head != 1) {
-            //OK, read out the last chunk!
-            val digits       = (acc ::: myNum :: Nil).foldLeft(0L)((a, b) => a * 10 + b)
-            val literal      = new Literal(v, i, digits)
-            val myNextHexEnd = myBitsRead % 4
-            (literal, myNextHexEnd)
-        }
-        else {
-            makeLiteral(v, i, input.drop(5), (acc ::: myNum :: Nil), myBitsRead)
-        }
+    private def readLiteral(version: Long, typeId: Long, input: T): (Int, Literal) = {
+        val app    = Iterator
+            .iterate((6, List.empty[Long], 1))((read: Int, lst: List[Long], hd: Int) => {
+                val rem  = input.drop(read)
+                val nInt = parseBin(rem.drop(1).take(4))
+                (read + 5, lst ::: nInt :: Nil, rem.head)
+            })
+            .dropWhile(_._3 == 1)
+            .next()
+        val fnlNum = app._2.foldLeft(0L)((a, b) => a * 10 + b)
+        (app._1, new Literal(version, typeId, fnlNum))
+    }
+
+    private def operatorByCount(version: Long, typeId: Long, rem: T): (Int, Operator) = {
+        val howManyToRead         = parseBin(rem.take(11));
+        val (nowRead, subPackets) = Iterator
+            .iterate((0, List.empty[HexPacket]))(readerNode(rem.drop(11)))
+            .drop(howManyToRead.toInt)
+            .next()
+        (nowRead + 7 + 11, new Operator(version, typeId, subPackets))
+    }
+
+    private def operatorByBits(version: Long, typeId: Long, rem: T): (Int, Operator) = {
+        //The next 15 bits denote how many bits to send through translate to get subpackets?
+        val howManyBits           = parseBin(rem.take(15))
+        val (nowRead, subPackets) = Iterator
+            .iterate((0, List.empty[HexPacket]))(readerNode(rem.drop(15)))
+            .dropWhile(_._1 < howManyBits)
+            .next()
+        (nowRead + 7 + 15, new Operator(version, typeId, subPackets))
+    }
+
+    private def readerNode(input: T)(read: Int, app: List[HexPacket]) = {
+        val (additRead, nextPacket) = translate(input.drop(read))
+        (read + additRead, app ::: nextPacket :: Nil)
     }
 
     def addVersions(hex: HexPacket): Long = {
-        hex match{
-            case Literal(version, _, _) => version.toLong
+        hex match {
+            case Literal(version, _, _)           => version
             case Operator(version, _, subPackets) => version + subPackets.map(addVersions).sum
         }
     }
 
-    def parseInput(): T = {
-        Source
-            .fromResource("day16-test-a.txt")
-            .getLines
-            .toList
-            .head
-            .flatMap(hToB)
-            .map(_.asDigit)
+    def applyOperations(hex: HexPacket): Long = {
+        hex match {
+            case Literal(_, _, value)         => value
+            case Operator(_, 0, subPackets) => subPackets.map(applyOperations).sum
+            case Operator(_, 1, subPackets) => subPackets.map(applyOperations).product
+            case Operator(_, 2, subPackets) => subPackets.map(applyOperations).min
+            case Operator(_, 3, subPackets) => subPackets.map(applyOperations).max
+            case Operator(_, 5, List(a, b)) => (if (applyOperations(a) > applyOperations(b)) {1L} else {0L})
+            case Operator(_, 6, List(a, b)) => (if (applyOperations(a) < applyOperations(b)) {1L} else {0L})
+            case Operator(_, 7, List(a, b)) => (if (applyOperations(a) == applyOperations(b)) {1L} else {0L})
+            case Operator(_, _, _) => 0L
+        }
     }
 
-    def partOne(input: T): String = {
-        val myHex = translate(input)._2
-        addVersions(myHex).toString
+    def parseInput(): HexPacket = {
+        translate(
+        //   Source
+        //       .fromResource("day16.txt")
+        //       .getLines
+        //       .toList
+        //       .head
+        "9C0141080250320F1802104A08".flatMap(hToB)
+              .map(_.asDigit)
+        )._2
     }
 
-    def partTwo(input: T): String = {
-        ""
+    def partOne(input: HexPacket): String = {
+        addVersions(input).toString
+    }
+
+    def partTwo(input: HexPacket): String = {
+        //16353679177 too low
+        applyOperations(input).toString
     }
 }
