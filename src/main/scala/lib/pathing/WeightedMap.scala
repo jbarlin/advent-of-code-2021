@@ -6,69 +6,44 @@ private final case class TraversalState[Key](cost: Double, steps: List[Key]) ext
     def compare(that: TraversalState[Key]): Int = that.cost.compare(this.cost)
 }
 
-final class WeightedMap[Key](val paths: Map[Key, List[WeightedPath[Key]]] = Map.empty) {
+final class WeightedMap[Key](val paths: Map[Key, List[(Double, Key)]] = Map.empty) {
 
     def addPath(path: WeightedPath[Key]): WeightedMap[Key] = {
-        val list  = paths.getOrElse(path.from, List.empty[WeightedPath[Key]]);
-
-        val nPath = this.paths + (path.from -> (list ::: path :: Nil));
-
+        val list  = paths.getOrElse(path.from, List.empty);
+        val nList = (path.weight, path.to) :: list ::: Nil
+        val nPath = this.paths + (path.from -> nList);
         new WeightedMap(nPath)
     }
 
     type Steps = List[Key]
+    type Path  = (Double, List[Key])
 
-    def pathBetween(start: Key, end: Key): Option[(Double, List[Key])] = {
+    def pathBetween(start: Key, end: Key): Option[Double] = {
         dijkstra(
-          PriorityQueue(new TraversalState(0.0, List(start))),
+          List((0.0, List(start))),
           end,
           Set(start)
         )
     }
 
-    private def updateQueue(
-        queue: PriorityQueue[TraversalState[Key]],
-        currCost: Double,
-        currSteps: Steps,
-        visited: Set[Key]
-    ): PriorityQueue[TraversalState[Key]] = {
-        (currSteps: @unchecked) match {
-            case keys @ key :: _ => {
-                paths(key)
-                    .filter(k => !visited.contains(k.to))
-                    .map(k => TraversalState(k.weight + currCost, k.to :: keys))
-                    .foreach(p => queue.enqueue(p))
-                queue
-            }
-        }
-    }
-
-    private def dijkstra(
-        queue: PriorityQueue[TraversalState[Key]],
-        end: Key,
-        visited: Set[Key] = Set.empty
-    ): Option[(Double, List[Key])] = {
-        if (queue.isEmpty) {
-            Option.empty
-        }
-        else {
-            queue.dequeue() match {
-                case m =>
-                    (m.cost, m.steps) match {
-                        case (dist, steps @ `end` :: _)    => {
-                            Option(dist, steps.reverse)
-                        }
-                        case (dist, steps @ currStep :: _) => {
-                            val nQueue = updateQueue(queue, dist, steps, visited)
-                            dijkstra(
-                              nQueue,
-                              end,
-                              visited + currStep
-                            )
-                        }
-                        case _ => Option.empty
+    private def dijkstra(remaining: List[Path], dest: Key, visited: Set[Key]): Option[Double] = remaining match {
+        case (dist, path) :: remaining_rest =>
+            path match {
+                case key :: path_rest => {
+                    if (key == dest) {
+                        Option(dist)
                     }
+                    else {
+                        val nRem       = paths(key).flatMap { case (d, key) =>
+                            if (!visited.contains(key)) { List((dist + d, key :: path)) }
+                            else { Nil }
+                        }
+                        val sortedNRem = (nRem ++ remaining_rest).sortWith { case ((d1, _), (d2, _)) => d1 < d2 }
+                        dijkstra(sortedNRem, dest, visited + key)
+                    }
+                }
             }
-        }
+
+        case Nil => Option.empty
     }
 }
