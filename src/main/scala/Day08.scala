@@ -1,16 +1,18 @@
 import lib.DayTemplate
 import lib.day8.NoteEntry
-
+import scala.collection.parallel.CollectionConverters._
 import scala.io.Source
+import scala.collection.parallel.immutable.ParSeq
 
-
-final object Day08 extends DayTemplate[Iterable[NoteEntry]] {
+object Day08 extends DayTemplate[ParSeq[NoteEntry]] {
     val uniqueNumbers: Set[Int] = (2 :: 3 :: 4 :: 7 :: Nil).toSet
 
-    def parseInput(): Iterable[NoteEntry] = {
+    def parseInput(): ParSeq[NoteEntry] = {
         Source
             .fromResource("day8.txt")
             .getLines
+            .toSeq
+            .par
             .filter(p => p.length > 0)
             .map[Array[String]](p => p.split('|'))
             .map(p => {
@@ -25,10 +27,10 @@ final object Day08 extends DayTemplate[Iterable[NoteEntry]] {
                         .split(" ")
                         .toList
                 )
-            ).iterator.to(Iterable)
+            )
     }
 
-    def partOne(input: Iterable[NoteEntry]): String = {
+    def partOne(input: ParSeq[NoteEntry]): String = {
         input
             .map(m => {
                 m.outputValues.count(c => uniqueNumbers.contains(c.size))
@@ -37,7 +39,7 @@ final object Day08 extends DayTemplate[Iterable[NoteEntry]] {
             .toString
     }
 
-    def partTwo(input: Iterable[NoteEntry]): String = {
+    def partTwo(input: ParSeq[NoteEntry]): String = {
         input.map(_.apply).sum.toString
     }
 }

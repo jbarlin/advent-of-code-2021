@@ -8,7 +8,7 @@ final object Day07 extends DayTemplate[List[Int]] {
         Source
             .fromResource("day7.txt")
             .getLines
-            .filter(p => p.length > 0)
+            .filter(!_.isBlank)
             .flatMap(p => p.split(","))
             .map(s => s.toInt)
             .toList

@@ -1,13 +1,14 @@
 import lib.{Coords, DayTemplate}
-
+import scala.collection.parallel.CollectionConverters._
 import scala.annotation.tailrec
 import scala.io.Source
 import lib.RecursiveUtils
+import scala.collection.parallel.immutable.ParMap
 
 type Awkies = Map[(List[lib.Coords], lib.Coords), Int]
 
-object Day09 extends DayTemplate[Map[Coords, Int]] {
-    def parseInput(): Map[Coords, Int] = {
+object Day09 extends DayTemplate[ParMap[Coords, Int]] {
+    def parseInput(): ParMap[Coords, Int] = {
         Source
             .fromResource("day9.txt")
             .getLines
@@ -24,9 +25,10 @@ object Day09 extends DayTemplate[Map[Coords, Int]] {
                     })
             })
             .toMap
+            .par
     }
 
-    def partOne(input: Map[Coords, Int]): String = {
+    def partOne(input: ParMap[Coords, Int]): String = {
         input
             .map(part => {
                 val list = part._1.aroundNoDiag
@@ -41,7 +43,7 @@ object Day09 extends DayTemplate[Map[Coords, Int]] {
             .toString
     }
 
-    def partTwo(input: Map[Coords, Int]): String = {
+    def partTwo(input: ParMap[Coords, Int]): String = {
         input
             .map(part => {
                 val list = part._1.aroundNoDiag
@@ -54,7 +56,7 @@ object Day09 extends DayTemplate[Map[Coords, Int]] {
             .map(_._1._2)
             .toList
             .map(coord => {
-                RecursiveUtils.applyStackOperationsToMap(input, coord.aroundNoDiag.toSet, findAllUntilNine, Set(coord))._2.size
+                RecursiveUtils.applyStackOperationsToMap(input.seq, coord.aroundNoDiag.toSet, findAllUntilNine, Set(coord))._2.size
             })
             .sortWith((a, b) => a > b)
             .take(3)

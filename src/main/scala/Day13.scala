@@ -56,21 +56,3 @@ object Day13 extends DayTemplate[T] {
         "\n\n" + Coords.mapToString(foldsApplied) + "\n\n"
     }
 }
-/*
-Coords(6,0), 
-Coords(9,7), 
-Coords(3,3), 
-Coords(3,7), 
-Coords(4,1), 
-Coords(6,7), 
-Coords(10,4), 
-Coords(3,4), 
-Coords(8,3), 
-Coords(9,0), 
-Coords(4,6), 
-Coords(0,3), 
-Coords(3,0), 
-Coords(0,4), 
-Coords(10,3), 
-Coords(8,4)
-*/

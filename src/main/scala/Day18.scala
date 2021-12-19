@@ -1,6 +1,7 @@
 import lib.DayTemplate
 import scala.io.Source
 import scala.annotation.tailrec
+import scala.collection.parallel.CollectionConverters._
 
 sealed trait SnailNumber {
     def addToLeft(toAdd: Int): SnailNumber
@@ -30,8 +31,8 @@ object SnailNumber {
         else {
             (1, new NormalNumber(input.tail.head.toInt - 48))
         }
-        val left = leftParse._2
-        val remainingStr = input.drop(leftParse._1 + 1)
+        val left                           = leftParse._2
+        val remainingStr                   = input.drop(leftParse._1 + 1)
         val rightParse: (Int, SnailNumber) = if (remainingStr.tail.head == '[') {
             val parseTail = apply(remainingStr.tail)
             (parseTail._1, parseTail._2)
@@ -39,11 +40,11 @@ object SnailNumber {
         else {
             (1, new NormalNumber(remainingStr.tail.head.toInt - 48))
         }
-        val right = rightParse._2
+        val right                          = rightParse._2
         return (leftParse._1 + rightParse._1 + 3, new PairNumbers(left, right))
     }
 
-    def add(a: SnailNumber, b: SnailNumber): SnailNumber = {
+    def add(a: SnailNumber, b: SnailNumber): SnailNumber                                                = {
         applyReducers(new PairNumbers(a, b))
     }
 
@@ -119,12 +120,14 @@ object Day18 extends DayTemplate[T] {
     }
 
     def partOne(input: T): String = {
-        input.reduce(SnailNumber.add(_,_)).magnitude.toString
+        input.reduce(SnailNumber.add(_, _)).magnitude.toString
     }
 
     def partTwo(input: T): String = {
         input
             .combinations(2)
+            .toSeq
+            .par
             .flatMap[(SnailNumber, SnailNumber)](s => (s.head, s.reverse.head) :: (s.reverse.head, s.head) :: Nil)
             .map(SnailNumber.add(_, _).magnitude)
             .max

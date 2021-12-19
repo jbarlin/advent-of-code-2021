@@ -1,26 +1,29 @@
 import lib.DayTemplate
 import lib.day10.{Token, TokenInformation}
 import org.apache.commons.lang3.builder.HashCodeBuilder
+import scala.collection.parallel.CollectionConverters._
 
 import scala.annotation.tailrec
 import scala.io.Source
+import scala.collection.parallel.ParSeq
 
-object Day10 extends DayTemplate[Iterable[Either[Token, List[Token]]]] {
-    def parseInput(): Iterable[Either[Token, List[Token]]] = {
+object Day10 extends DayTemplate[ParSeq[Either[Token, List[Token]]]] {
+    def parseInput(): ParSeq[Either[Token, List[Token]]] = {
         Source
             .fromResource("day10.txt")
             .getLines
             .filter(!_.isBlank)
+            .toList
+            .par
             .map(
               _.toList.map(Token(_))
             )
-            .toList
             .map(tokens => {
                 findMissingToken(tokens, Iterable.empty[Token])
             })
     }
 
-    def partOne(input: Iterable[Either[Token, List[Token]]]): String = {
+    def partOne(input: ParSeq[Either[Token, List[Token]]]): String = {
         input
             .filter(_.isLeft)
             .map(_.left.toOption.get)
@@ -29,7 +32,7 @@ object Day10 extends DayTemplate[Iterable[Either[Token, List[Token]]]] {
             .toString
     }
 
-    def partTwo(input: Iterable[Either[Token, List[Token]]]): String = {
+    def partTwo(input: ParSeq[Either[Token, List[Token]]]): String = {
         val remaining = input
             .filter(_.isRight)
             .map(_.toOption.get)

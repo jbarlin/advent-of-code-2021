@@ -7,5 +7,6 @@ lazy val root = project
       version      := "0.1.0-SNAPSHOT",
       scalaVersion := scala3Version,
       // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-      libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.12.0"
+      libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.12.0",
+      libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4"
     )

@@ -1,6 +1,7 @@
 import lib.DayTemplate
 import scala.io.Source
 import scala.util.Try
+import scala.collection.parallel.CollectionConverters._
 
 abstract trait HexPacket
 
@@ -97,10 +98,10 @@ object Day16 extends DayTemplate[HexPacket] {
     def applyOperations(hex: HexPacket): BigInt = {
         hex match {
             case Literal(_, _, value)         => value
-            case Operator(_, 0, subPackets) => subPackets.map(applyOperations).sum
-            case Operator(_, 1, subPackets) => subPackets.map(applyOperations).product
-            case Operator(_, 2, subPackets) => subPackets.map(applyOperations).min
-            case Operator(_, 3, subPackets) => subPackets.map(applyOperations).max
+            case Operator(_, 0, subPackets) => subPackets.par.map(applyOperations).sum
+            case Operator(_, 1, subPackets) => subPackets.par.map(applyOperations).product
+            case Operator(_, 2, subPackets) => subPackets.par.map(applyOperations).min
+            case Operator(_, 3, subPackets) => subPackets.par.map(applyOperations).max
             case Operator(_, 5, List(a, b)) => (if (applyOperations(a) > applyOperations(b)) {1L} else {0L})
             case Operator(_, 6, List(a, b)) => (if (applyOperations(a) < applyOperations(b)) {1L} else {0L})
             case Operator(_, 7, List(a, b)) => (if (applyOperations(a) == applyOperations(b)) {1L} else {0L})
