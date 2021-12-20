@@ -1,17 +1,11 @@
 import lib.DayTemplate
-
-final case class Target(val xRange: Range, val yRange: Range){
-    val xmin = xRange.min
-    val xmax = xRange.max
-    val ymin = yRange.min
-    val ymax = yRange.max
-}
+import lib.day17.Target
 
 object Day17 extends DayTemplate[Target] {
   
-    def parseInput() = {
-        val testA = new Target(20 to 30, -10 to -5)
-        val myProblem = new Target(244 to 303, -91 to -54)
+    def parseInput(): Target = {
+        val testA = new Target(20 , 30, -10 , -5)
+        val myProblem = new Target(244 , 303, -91 , -54)
         return myProblem
     }
 

@@ -42,6 +42,9 @@ final class WeightedMap[Key](val paths: Map[Key, List[(Double, Key)]] = Map.empt
                         dijkstra(sortedNRem, dest, visited + key)
                     }
                 }
+                case Nil => {
+                    Option(dist)
+                }
             }
 
         case Nil => Option.empty

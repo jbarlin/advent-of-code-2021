@@ -20,7 +20,7 @@ final class LinearVector(val m: Int, val b: Int) {
     }
 }
 
-final object LinearVector {
+object LinearVector {
     def apply(pointA: Coords): (Coords => LinearVector) = (pointB: Coords) => {
         val dx = pointA.x - pointB.x
         val dy = pointA.y - pointB.y

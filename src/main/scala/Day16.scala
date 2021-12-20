@@ -1,12 +1,9 @@
 import lib.DayTemplate
+import lib.day16.{HexPacket, Literal, Operator}
 import scala.io.Source
 import scala.util.Try
-import scala.collection.parallel.CollectionConverters._
+import scala.collection.parallel.CollectionConverters.*
 
-abstract trait HexPacket
-
-final case class Literal(val v: Long, val i: Long, val value: Long)                  extends HexPacket
-final case class Operator(val v: Long, val i: Long, val subPackets: List[HexPacket]) extends HexPacket
 
 type Day16Type = Seq[Int]
 
