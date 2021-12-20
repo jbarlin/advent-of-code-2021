@@ -4,7 +4,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder
 import scala.annotation.tailrec
 import scala.collection.SeqView
 import scala.collection.parallel.CollectionConverters.*
-import scala.collection.parallel.immutable.{ParSeq, ParSet}
+import scala.collection.parallel.immutable.ParSeq
+import scala.collection.parallel.immutable.ParSet
 import scala.io.Source
 
 type T = (Set[Coord3], Map[Int, Coord3])
@@ -62,9 +63,8 @@ final case class Scanner(beacons: Set[Coord3]) {
 
 object Scanner {
 
-    def findOtherRelTo(other: (Scanner, Int), beacons: Set[Coord3]): Option[(Set[Coord3], Coord3, Int)] = {
+    inline def findOtherRelTo(other: (Scanner, Int), beacons: Set[Coord3]): Option[(Set[Coord3], Coord3, Int)] = {
         val myTransform = transform(beacons)
-
         createRelativeIterator(other._1, beacons)
             .map(myTransform)
             .find(f => f._2.size >= 12)
@@ -77,14 +77,14 @@ object Scanner {
         innerSolve(possibles.tail, scanners.head.beacons, Map(0 -> Coord3(0, 0, 0)))
     }
 
-    private def transform(beacons: Set[Coord3]) = (triple: (Set[Coord3], Coord3, Coord3)) => {
+    inline private def transform(beacons: Set[Coord3]) = (triple: (Set[Coord3], Coord3, Coord3)) => {
         val diff           = triple._2 - triple._3
         val rotatedChanged = triple._1.map(_ + diff)
         val intersect      = beacons.intersect(rotatedChanged)
         (rotatedChanged, intersect, diff)
     }
 
-    private def createRelativeIterator(scanner: Scanner, beacons: Set[Coord3]): ParSet[(Set[Coord3], Coord3, Coord3)] =
+    inline private def createRelativeIterator(scanner: Scanner, beacons: Set[Coord3]): ParSet[(Set[Coord3], Coord3, Coord3)] =
         scanner.orientations.par
             .flatMap(rotated => {
                 beacons.flatMap(beaconFrom1 => {
@@ -109,7 +109,7 @@ object Scanner {
         }
     }
 
-    private def resolveNewSolverIteration(
+    inline private def resolveNewSolverIteration(
         scanners: Seq[(Scanner, Int)],
         beacons: Set[Coord3],
         scanMap: Map[Int, Coord3]
@@ -127,7 +127,7 @@ object Scanner {
         (newBeacons, newScanners, nMap)
     }
 
-    def apply(location: String): Seq[Scanner] = {
+    inline def apply(location: String): Seq[Scanner] = {
         val inp = Source
             .fromResource(location)
             .getLines
