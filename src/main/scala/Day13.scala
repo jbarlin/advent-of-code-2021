@@ -5,10 +5,10 @@ import scala.annotation.tailrec
 
 type coordsMap = Set[Coords]
 type opTuple = (Option[Int], Option[Int])
-type T = (coordsMap, List[opTuple])
+type Day13Type = (coordsMap, List[opTuple])
 
-object Day13 extends DayTemplate[T] {
-    def parseInput(): T = {
+object Day13 extends DayTemplate[Day13Type] {
+    def parseInput(): Day13Type = {
         val inp = Source
             .fromResource("day13.txt")
             .getLines
@@ -47,11 +47,11 @@ object Day13 extends DayTemplate[T] {
         }
     }
 
-    def partOne(input: T): String = {
+    def partOne(input: Day13Type): String = {
         applyFolds(input._1, List(input._2.head)).size.toString
     }
 
-    def partTwo(input: T): String = {
+    def partTwo(input: Day13Type): String = {
         val foldsApplied = applyFolds(input._1, input._2)
         "\n\n" + Coords.mapToString(foldsApplied) + "\n\n"
     }

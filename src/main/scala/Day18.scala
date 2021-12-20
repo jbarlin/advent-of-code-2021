@@ -105,10 +105,10 @@ object SnailNumber {
     }
 }
 
-type T = Seq[SnailNumber]
+type Day18Type = Seq[SnailNumber]
 
-object Day18 extends DayTemplate[T] {
-    def parseInput(): T = {
+object Day18 extends DayTemplate[Day18Type] {
+    def parseInput(): Day18Type = {
         Source
             .fromResource("day18.txt")
             .getLines
@@ -119,11 +119,11 @@ object Day18 extends DayTemplate[T] {
             .toSeq
     }
 
-    def partOne(input: T): String = {
+    def partOne(input: Day18Type): String = {
         input.reduce(SnailNumber.add(_, _)).magnitude.toString
     }
 
-    def partTwo(input: T): String = {
+    def partTwo(input: Day18Type): String = {
         input
             .combinations(2)
             .toSeq

@@ -3,7 +3,7 @@ import lib.DayTemplate
 import scala.annotation.tailrec
 import scala.io.Source
 
-final object Day06 extends DayTemplate[Map[Int, Long]] {
+object Day06 extends DayTemplate[Map[Int, Long]] {
     def parseInput(): Map[Int, Long] = {
         Source
             .fromResource("day6.txt")

@@ -2,10 +2,10 @@ import lib.DayTemplate
 import scala.io.Source
 import lib.RecursiveUtils
 
-type T = Map[String, List[String]];
+type Day12Type = Map[String, List[String]];
 
-object Day12 extends DayTemplate[T] {
-    def parseInput(): T = {
+object Day12 extends DayTemplate[Day12Type] {
+    def parseInput(): Day12Type = {
         Source
             .fromResource("day12.txt")
             .getLines
@@ -21,14 +21,14 @@ object Day12 extends DayTemplate[T] {
 
     }
 
-    def partOne(input: T): String = {
+    def partOne(input: Day12Type): String = {
         pathFinder(input, "start", Set.empty[String], Option("neVER!!!!")).toString
     }
-    def partTwo(input: T): String = {
+    def partTwo(input: Day12Type): String = {
         pathFinder(input, "start", Set.empty[String], Option.empty[String]).toString
     }
 
-    private def pathFinder(state: T, node: String, seen: Set[String], seenTwice: Option[String] = Option.empty): Int = {
+    private def pathFinder(state: Day12Type, node: String, seen: Set[String], seenTwice: Option[String] = Option.empty): Int = {
         if (node == "end") {
             1
         }
@@ -48,10 +48,10 @@ object Day12 extends DayTemplate[T] {
     }
 
     private def laughAtBadRecursiveFunction(numTimes: Int)(
-        state: T,
+        state: Day12Type,
         pathsExploring: Iterable[List[String]],
         pathsVisted: Set[List[String]]
-    ): (T, Iterable[List[String]], Set[List[String]]) = {
+    ): (Day12Type, Iterable[List[String]], Set[List[String]]) = {
         val currPath                      = pathsExploring.head
         val remainPaths                   = pathsExploring.toSet - currPath
         val newVisited: Set[List[String]] = pathsVisted + currPath

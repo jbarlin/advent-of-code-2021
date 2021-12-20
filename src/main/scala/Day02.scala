@@ -3,7 +3,7 @@ import lib.DayTemplate
 import lib.Coords
 import lib.day2.{DownSubMovement, ForwardSubMovement, SubMovement, UpSubMovement}
 
-final object Day02 extends DayTemplate[List[SubMovement]] {
+object Day02 extends DayTemplate[List[SubMovement]] {
 
     def parseInput(): List[SubMovement] = {
         Source

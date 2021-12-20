@@ -8,7 +8,7 @@ import scala.collection.parallel.immutable.ParSeq
 import scala.collection.parallel.immutable.ParSet
 import scala.io.Source
 
-type T = (Set[Coord3], Map[Int, Coord3])
+type Day19Type = (Set[Coord3], Map[Int, Coord3])
 
 final case class Coord3(x: Int, y: Int, z: Int) {
     lazy val rotations: Seq[Coord3] = {
@@ -146,15 +146,15 @@ object Scanner {
     }
 }
 
-object Day19 extends DayTemplate[T] {
-    def parseInput(): T = {
+object Day19 extends DayTemplate[Day19Type] {
+    def parseInput(): Day19Type = {
         val fnlInp: Seq[Scanner] = Scanner.apply("day19.txt")
         Scanner.solve(fnlInp)
     }
 
-    def partOne(input: T): String = input._1.size.toString
+    def partOne(input: Day19Type): String = input._1.size.toString
 
-    def partTwo(input: T): String = input._2
+    def partTwo(input: Day19Type): String = input._2
         .map(_._2)
         .toSeq
         .combinations(2)

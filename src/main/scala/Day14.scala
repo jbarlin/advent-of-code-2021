@@ -59,10 +59,10 @@ object Polymer {
     }
 }
 
-type T = (Polymer, Templates)
+type Day14Type = (Polymer, Templates)
 
-object Day14 extends ExtendingDayTemplate[T, Polymer] {
-    def parseInput(): T = {
+object Day14 extends ExtendingDayTemplate[Day14Type, Polymer] {
+    def parseInput(): Day14Type = {
         val inp       = Source
             .fromResource("day14.txt")
             .getLines
@@ -88,12 +88,12 @@ object Day14 extends ExtendingDayTemplate[T, Polymer] {
         }
     }
 
-    def partOne(input: T): (String, Polymer) = {
+    def partOne(input: Day14Type): (String, Polymer) = {
         val transformed = transformInputNTimes(input._1, input._2, 10);
         ((transformed.mostCommonCount - transformed.leastCommonCount).toString, transformed)
     }
 
-    def partTwo(input: T, fromOne: Polymer): String = {
+    def partTwo(input: Day14Type, fromOne: Polymer): String = {
         val transformed = transformInputNTimes(fromOne, input._2, 40 - 10)
         (transformed.mostCommonCount - transformed.leastCommonCount).toString
     }

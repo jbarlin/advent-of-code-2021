@@ -7,7 +7,7 @@ import scala.io.Source
 type Plays = Array[Int];
 type BingoLine = List[BingoTile];
 
-final object Day04 extends DayTemplate[BingoGame] {
+object Day04 extends DayTemplate[BingoGame] {
     def parseInput(): BingoGame = {
         val lines = Source
             .fromResource("day4.txt")

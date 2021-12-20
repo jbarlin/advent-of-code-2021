@@ -8,7 +8,7 @@ abstract trait HexPacket
 final case class Literal(val v: Long, val i: Long, val value: Long)                  extends HexPacket
 final case class Operator(val v: Long, val i: Long, val subPackets: List[HexPacket]) extends HexPacket
 
-type T = Seq[Int]
+type Day16Type = Seq[Int]
 
 object Day16 extends DayTemplate[HexPacket] {
 
@@ -35,7 +35,7 @@ object Day16 extends DayTemplate[HexPacket] {
       'F' -> "1111"
     )
 
-    private def translate(input: T): (Int, HexPacket) = {
+    private def translate(input: Day16Type): (Int, HexPacket) = {
         val version = parseBin(input.slice(0, 3))
         val typeId  = parseBin(input.slice(3, 6))
         if (typeId == 4) {
@@ -53,7 +53,7 @@ object Day16 extends DayTemplate[HexPacket] {
         }
     }
 
-    private def readLiteral(version: Long, typeId: Long, input: T): (Int, Literal) = {
+    private def readLiteral(version: Long, typeId: Long, input: Day16Type): (Int, Literal) = {
         val app    = Iterator
             .iterate((6, List.empty[Int], 1))((read: Int, lst: List[Int], hd: Int) => {
                 val rem  = input.drop(read)
@@ -64,7 +64,7 @@ object Day16 extends DayTemplate[HexPacket] {
         (app._1, new Literal(version, typeId, parseBin(app._2)))
     }
 
-    private def operatorByCount(version: Long, typeId: Long, rem: T): (Int, Operator) = {
+    private def operatorByCount(version: Long, typeId: Long, rem: Day16Type): (Int, Operator) = {
         val howManyToRead         = parseBin(rem.take(11));
         val (nowRead, subPackets) = Iterator
             .iterate((0, List.empty[HexPacket]))(readSubNode(rem.drop(11)))
@@ -73,7 +73,7 @@ object Day16 extends DayTemplate[HexPacket] {
         (nowRead + 7 + 11, new Operator(version, typeId, subPackets))
     }
 
-    private def operatorByBits(version: Long, typeId: Long, rem: T): (Int, Operator) = {
+    private def operatorByBits(version: Long, typeId: Long, rem: Day16Type): (Int, Operator) = {
         //The next 15 bits denote how many bits to send through translate to get subpackets?
         val howManyBits           = parseBin(rem.take(15))
         val (nowRead, subPackets) = Iterator
@@ -83,7 +83,7 @@ object Day16 extends DayTemplate[HexPacket] {
         (nowRead + 7 + 15, new Operator(version, typeId, subPackets))
     }
 
-    private def readSubNode(input: T)(read: Int, app: List[HexPacket]) = {
+    private def readSubNode(input: Day16Type)(read: Int, app: List[HexPacket]) = {
         val (additRead, nextPacket) = translate(input.drop(read))
         (read + additRead, app ::: nextPacket :: Nil)
     }
