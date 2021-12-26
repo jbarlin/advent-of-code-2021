@@ -10,8 +10,9 @@ lazy val root = project
       libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.12.0",
       libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4", 
       scalacOptions ++= Seq(
-        "-optimisations",
-        "-optimise",
-        "-opt:l:method",
+        "optimisations",
+        "optimise",
+        "opt:l:method",
+        "target:jvm-17"
       )
     )
