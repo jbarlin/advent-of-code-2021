@@ -9,7 +9,7 @@ final case class D15Inp(val smallerMap: WeightedMap[Coords] , val largerMap: Wei
 object Day15 extends DayTemplate[D15Inp] {
     def parseInput(): D15Inp = {
         val coordsAndNum = Source
-            .fromResource("day15.txt")
+            .fromResource("day15-test.txt")
             .getLines
             .filter(!_.isBlank)
             .zipWithIndex
@@ -54,7 +54,7 @@ object Day15 extends DayTemplate[D15Inp] {
     def partOne(input: D15Inp): String = {
         val mySolved = input.smallerMap
             .pathBetween(new Coords(0, 0), input.maxCoord)
-        mySolved.map(_._1)
+        mySolved
             .getOrElse(0.0)
             .toLong
             .toString
@@ -64,7 +64,6 @@ object Day15 extends DayTemplate[D15Inp] {
         val mySolved = input.largerMap
             .pathBetween(new Coords(0, 0), myMax)
         mySolved
-            .map(_._1)
             .getOrElse(0.0)
             .toLong
             .toString
