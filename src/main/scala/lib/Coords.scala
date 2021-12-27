@@ -26,6 +26,31 @@ final class Coords(val x: Int, val y: Int) {
         new Coords(this.x + that.x, this.y + that.y);
     }
 
+    def to(other: Coords): IndexedSeq[Coords] = {
+        val cX = {
+            if (this.x > other.x) {
+                -1
+            } else if (this.y == other.y){
+                0
+            }
+            else {
+                1
+            }
+        }
+        val cY = {
+            if (this.y > other.y) {
+                -1
+            } else if (this.y == other.y){
+                0
+            }
+            else {
+                1
+            }
+        }
+        (this.x to other.x by cX)
+            .flatMap(x => (this.y to other.y by cY).map(y => new Coords(x, y)))
+    }
+
     def addX(x: Int): Coords = {
         this + Coords(x)(0)
     }
@@ -54,19 +79,22 @@ final class Coords(val x: Int, val y: Int) {
         this.magnitude < that.magnitude
     }
     def compare(that: Coords)       = this.magnitude.compare(that.magnitude)
-    override def toString(): String = "Coords(" + x + "," + y + ")"
+    override def toString(): String = "Coords(x:" + x + ",y:" + y + ")"
 
     def aroundMe(
         min: (Int, Int) = (0, 0),
         max: (Int, Int) = (Int.MaxValue, Int.MaxValue),
         diagonals: Boolean = false
-    ): List[Coords] = {
-        val tmp = ((x - 1) to (x + 1))
-            .flatMap(xI => ((y - 1) to (y + 1)).map(xI -> _))
-            .filter(i => i._1 >= min._1 && i._1 <= max._1 && i._2 >= min._2 && i._2 <= max._2)
-            .filter(p => (diagonals) || (p._1 == x || p._2 == y))
-            .filterNot(p => p._1 == x && p._2 == y)
-        tmp.map(p => Coords(p._1)(p._2)).toList
+    ): Seq[Coords] = {
+        this.addX(-1).addY(-1)
+            .to(
+                this.addX(1).addY(1)
+            )
+            .filter(i => i.x >= min._1 && i.x <= max._1 && i.y >= min._2 && i.y <= max._2)
+            .filter(p => (diagonals) || (p.x == x || p.y == y))
+            .filterNot(p => p.x == x && p.y == y)
+            .sortBy(c => (c.y, c.x))
+            .toSeq
     }
     lazy val aroundWithDiag = aroundMe((0, 0), (Int.MaxValue, Int.MaxValue), true)
     lazy val aroundNoDiag   = aroundMe((0, 0), (Int.MaxValue, Int.MaxValue), false)

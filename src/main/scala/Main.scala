@@ -23,6 +23,7 @@ import lib.{DayTemplate, ExtendingDayTemplate}
         runDay(17, Day17);
         runDay(18, Day18);
         runDay(19, Day19);
+        runDay(20, Day20);
         print("\nTotal time: ")
     })
     println("\nAnd ... done!")
