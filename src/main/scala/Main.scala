@@ -18,7 +18,7 @@ import lib.{DayTemplate, ExtendingDayTemplate}
         runDay(12, Day12);
         runDay(13, Day13);
         runDayExtended(14, Day14);
-        runDay(15, Day15);
+        // runDay(15, Day15);
         runDay(16, Day16);
         runDay(17, Day17);
         runDay(18, Day18);
