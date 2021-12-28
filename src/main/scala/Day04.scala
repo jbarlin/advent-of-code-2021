@@ -4,21 +4,24 @@ import lib.day4.{BingoBoard, BingoGame, BingoGameBuilder, BingoTile}
 import scala.annotation.tailrec
 import scala.io.Source
 
-type Plays = Array[Int];
+type Plays     = Array[Int];
 type BingoLine = List[BingoTile];
 
 object Day04 extends DayTemplate[BingoGame] {
-    def parseInput(): BingoGame = {
-        val lines = Source
-            .fromResource("day4.txt")
+    def parseInput(test: Boolean = false): BingoGame = {
+        val lines     = Source
+            .fromResource(
+              if (!test) { "day4.txt" }
+              else { "day4-test.txt" }
+            )
             .getLines
             .toList;
         val playsLine = lines.head;
         val remaining = lines.tail.tail;
-        val plays = playsLine.split(",").map(s => s.toInt);
-        val mp = remaining
+        val plays     = playsLine.split(",").map(s => s.toInt);
+        val mp        = remaining
             .map(line => line.split(" ").filter(s => s.trim.size != 0))
-            .foldLeft(new BingoGameBuilder())(_ (_))
+            .foldLeft(new BingoGameBuilder())(_(_))
             .boards
 
         new BingoGame(plays, mp);
@@ -35,12 +38,18 @@ object Day04 extends DayTemplate[BingoGame] {
     }
 
     @tailrec
-    private def findCondition(plays: Plays, boards: List[BingoBoard], cond: (List[BingoBoard] => Boolean), find: (List[BingoBoard] => BingoBoard)): (Plays, BingoBoard, Int) = {
-        val thisPlay = plays.head
-        val nextBoards = boards.map(_ (thisPlay))
-        if (cond.apply(nextBoards)){
+    private def findCondition(
+        plays: Plays,
+        boards: List[BingoBoard],
+        cond: (List[BingoBoard] => Boolean),
+        find: (List[BingoBoard] => BingoBoard)
+    ): (Plays, BingoBoard, Int) = {
+        val thisPlay   = plays.head
+        val nextBoards = boards.map(_(thisPlay))
+        if (cond.apply(nextBoards)) {
             (plays.tail, find(nextBoards), thisPlay)
-        }else{
+        }
+        else {
             findCondition(plays.tail, nextBoards, cond, find)
         }
     }

@@ -3,9 +3,12 @@ import lib.{Coords, DayTemplate, RecursiveUtils}
 import scala.annotation.tailrec
 import scala.io.Source
 object Day11 extends DayTemplate[Map[Coords, Int]] {
-    def parseInput(): Map[Coords, Int] = {
+    def parseInput(test: Boolean): Map[Coords, Int] = {
         Source
-            .fromResource("day11.txt")
+            .fromResource(
+              if (!test) { "day11.txt" }
+              else { "day11-test.txt" }
+            )
             .getLines
             .filter(!_.isBlank)
             .zipWithIndex

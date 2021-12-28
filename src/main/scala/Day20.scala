@@ -52,9 +52,12 @@ private final case class Day20(val translationField: Seq[Int], val definedPlane:
 }
 
 object Day20 extends DayTemplate[Day20] {
-    def parseInput(): Day20 = {
+    def parseInput(test: Boolean): Day20 = {
         val textInput        = Source
-            .fromResource("day20.txt")
+            .fromResource(
+              if (!test) { "day20.txt" }
+              else { "day20-test.txt" }
+            )
             .getLines
         val fLineIn          = textInput.next
         val translationField = fLineIn.map {

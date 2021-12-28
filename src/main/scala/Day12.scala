@@ -5,9 +5,12 @@ import lib.RecursiveUtils
 type Day12Type = Map[String, List[String]];
 
 object Day12 extends DayTemplate[Day12Type] {
-    def parseInput(): Day12Type = {
+    def parseInput(test: Boolean): Day12Type = {
         Source
-            .fromResource("day12.txt")
+            .fromResource(
+              if (!test) { "day12.txt" }
+              else { "day12-test-c.txt" }
+            )
             .getLines
             .filter(!_.isBlank)
             .map(str => str.split('-'))

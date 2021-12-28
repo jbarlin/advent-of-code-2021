@@ -8,9 +8,12 @@ import scala.collection.parallel.immutable.ParMap
 type Awkies = Map[(List[lib.Coords], lib.Coords), Int]
 
 object Day09 extends DayTemplate[ParMap[Coords, Int]] {
-    def parseInput(): ParMap[Coords, Int] = {
+    def parseInput(test: Boolean): ParMap[Coords, Int] = {
         Source
-            .fromResource("day9.txt")
+            .fromResource(
+              if (!test) { "day9.txt" }
+              else { "day9-test.txt" }
+            )
             .getLines
             .zipWithIndex
             .flatMap(line => {

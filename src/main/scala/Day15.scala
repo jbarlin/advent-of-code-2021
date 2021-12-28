@@ -7,9 +7,12 @@ import scala.io.Source
 type D15 = (Array[Array[Int]], Array[Array[Int]]);
 
 object Day15 extends DayTemplate[D15] {
-    def parseInput(): D15 = {
+    def parseInput(test: Boolean): D15 = {
         val smallerMap: Array[Array[Int]] = Source
-            .fromResource("day15-test.txt")
+            .fromResource(
+              if (true || !test) { "day15.txt" }
+              else { "day15-test.txt" }
+            )
             .getLines
             .filter(!_.isBlank)
             .toArray

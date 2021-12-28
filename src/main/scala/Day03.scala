@@ -6,9 +6,12 @@ import scala.math
 import scala.annotation.tailrec
 
 object Day03 extends DayTemplate[List[List[Int]]] {
-    def parseInput() = {
+    def parseInput(test: Boolean = false) = {
         Source
-            .fromResource("day3.txt")
+            .fromResource(
+              if (!test) { "day3.txt" }
+              else { "day3-test.txt" }
+            )
             .getLines
             .map(str => {
                 str.toList
@@ -23,15 +26,15 @@ object Day03 extends DayTemplate[List[List[Int]]] {
         val startTally: List[Tally] = input.head.map(_ => new Tally());
 
         val binary: (String, String) = input
-              .map((list) => {
-                  list
-                      .map(dig => new Tally().add(dig))
-              })
-              .fold(startTally)((tallyA, tallyB) => {
-                  tallyA
-                      .zip(tallyB)
-                      .map(pair => pair._1 + pair._2)
-              })
+            .map((list) => {
+                list
+                    .map(dig => new Tally().add(dig))
+            })
+            .fold(startTally)((tallyA, tallyB) => {
+                tallyA
+                    .zip(tallyB)
+                    .map(pair => pair._1 + pair._2)
+            })
             .foldLeft(("", ""))((strs, tally) => {
                 (
                   strs._1 + tally.toLarger().toString,

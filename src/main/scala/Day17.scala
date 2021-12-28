@@ -2,11 +2,12 @@ import lib.DayTemplate
 import lib.day17.Target
 
 object Day17 extends DayTemplate[Target] {
-  
-    def parseInput(): Target = {
-        val testA = new Target(20 , 30, -10 , -5)
-        val myProblem = new Target(244 , 303, -91 , -54)
-        return myProblem
+
+    def parseInput(test: Boolean): Target = {
+        val testA     = new Target(20, 30, -10, -5)
+        val myProblem = new Target(244, 303, -91, -54)
+        return (if (!test) { myProblem }
+                else { testA })
     }
 
     private def triangular(n: Int): Int = {
@@ -20,7 +21,8 @@ object Day17 extends DayTemplate[Target] {
     def partOne(input: Target): String = {
         if (triangular(inverseTri(input.xmin)) != input.xmin && (triangular(inverseTri(input.xmin) + 1)) > input.xmax) {
             throw new NotImplementedError("Only wrote for some triangular number in x")
-        }else{
+        }
+        else {
             triangular(input.ymin).toString
         }
     }
@@ -37,18 +39,20 @@ object Day17 extends DayTemplate[Target] {
     }
 
     private def checkIfVelGood(vx: Int, vy: Int, input: Target): Int = {
-        Iterator.iterate((0, 0, vx, vy, Option.empty[Int]))
-            ((oX, oY, oVX, oVY, ind) => {
-                val x = oX + oVX
-                val y = oY + oVY
-                val vx = oVX + (if (oVX == 0) {0} else if (oVX > 0) {-1} else {1})
-                val vy = oVY - 1
+        Iterator
+            .iterate((0, 0, vx, vy, Option.empty[Int]))((oX, oY, oVX, oVY, ind) => {
+                val x    = oX + oVX
+                val y    = oY + oVY
+                val vx   = oVX + (if (oVX == 0) { 0 }
+                                else if (oVX > 0) { -1 }
+                                else { 1 })
+                val vy   = oVY - 1
                 val pair = (input.xmin <= x && x <= input.xmax, input.ymin <= y && y <= input.ymax)
                 pair match {
-                    case (true, true) => (x, y, vx, vy,Option(1))
-                    case (false, _) if vx == 0 => (x, y, vx, vy, Option(0))
+                    case (true, true)                           => (x, y, vx, vy, Option(1))
+                    case (false, _) if vx == 0                  => (x, y, vx, vy, Option(0))
                     case (_, false) if vy < 0 && y < input.ymin => (x, y, vx, vy, Option(0))
-                    case _ => (x, y, vx, vy, Option.empty)
+                    case _                                      => (x, y, vx, vy, Option.empty)
                 }
             })
             .dropWhile(_._5.isEmpty)

@@ -8,9 +8,12 @@ type opTuple = (Option[Int], Option[Int])
 type Day13Type = (coordsMap, List[opTuple])
 
 object Day13 extends DayTemplate[Day13Type] {
-    def parseInput(): Day13Type = {
+    def parseInput(test: Boolean): Day13Type = {
         val inp = Source
-            .fromResource("day13.txt")
+            .fromResource(
+              if (!test) { "day13.txt" }
+              else { "day13-test.txt" }
+            )
             .getLines
             .zipWithIndex
             .toList

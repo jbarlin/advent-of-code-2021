@@ -7,9 +7,12 @@ import scala.collection.parallel.immutable.ParSeq
 object Day08 extends DayTemplate[ParSeq[NoteEntry]] {
     val uniqueNumbers: Set[Int] = (2 :: 3 :: 4 :: 7 :: Nil).toSet
 
-    def parseInput(): ParSeq[NoteEntry] = {
+    def parseInput(test: Boolean): ParSeq[NoteEntry] = {
         Source
-            .fromResource("day8.txt")
+            .fromResource(
+              if (!test) { "day8.txt" }
+              else { "day8-test.txt" }
+            )
             .getLines
             .toSeq
             .par

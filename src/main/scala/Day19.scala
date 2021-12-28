@@ -1,5 +1,6 @@
 import lib.DayTemplate
-import lib.day19.{Coord3, Scanner}
+import lib.Coord3
+import lib.day19.{Scanner}
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import scala.annotation.tailrec
 import scala.collection.SeqView
@@ -14,8 +15,11 @@ type Day19Type = (Set[Coord3], Map[Int, Coord3])
 
 
 object Day19 extends DayTemplate[Day19Type] {
-    final def parseInput(): Day19Type = {
-        val fnlInp: Seq[Scanner] = Scanner.apply("day19.txt")
+    final def parseInput(test: Boolean): Day19Type = {
+        val fnlInp: Seq[Scanner] = Scanner.apply(
+              if (!test) { "day19.txt" }
+              else { "day19-test.txt" }
+            )
         Scanner.solve(fnlInp)
     }
 

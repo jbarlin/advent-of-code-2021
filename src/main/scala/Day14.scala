@@ -10,9 +10,12 @@ type Templates = Map[(Char, Char), Char]
 type Day14Type = (Polymer, Templates)
 
 object Day14 extends ExtendingDayTemplate[Day14Type, Polymer] {
-    def parseInput(): Day14Type = {
+    def parseInput(test: Boolean): Day14Type = {
         val inp       = Source
-            .fromResource("day14.txt")
+            .fromResource(
+              if (!test) { "day14.txt" }
+              else { "day14-test.txt" }
+            )
             .getLines
             .filter(!_.isBlank)
             .toList;

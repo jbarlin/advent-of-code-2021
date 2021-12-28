@@ -3,9 +3,12 @@ import scala.annotation.tailrec
 import scala.io.Source
 
 object Day07 extends DayTemplate[List[Int]] {
-    def parseInput(): List[Int] = {
+    def parseInput(test: Boolean): List[Int] = {
         Source
-            .fromResource("day7.txt")
+            .fromResource(
+              if (!test) { "day7.txt" }
+              else { "day7-test.txt" }
+            )
             .getLines
             .filter(!_.isBlank)
             .flatMap(p => p.split(","))

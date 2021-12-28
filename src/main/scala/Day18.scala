@@ -8,9 +8,12 @@ import scala.collection.parallel.CollectionConverters.*
 type Day18Type = Seq[SnailNumber]
 
 object Day18 extends DayTemplate[Day18Type] {
-    def parseInput(): Day18Type = {
+    def parseInput(test: Boolean): Day18Type = {
         Source
-            .fromResource("day18.txt")
+            .fromResource(
+              if (!test) { "day18.txt" }
+              else { "day18-test-c.txt" }
+            )
             .getLines
             .filter(!_.isBlank)
             .map(

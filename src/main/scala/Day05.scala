@@ -6,9 +6,12 @@ import scala.io.Source
 import lib.RecursiveUtils
 
 object Day05 extends DayTemplate[List[VentPath]] {
-    def parseInput(): List[VentPath] = {
+    def parseInput(test: Boolean = false): List[VentPath] = {
         Source
-            .fromResource("day5.txt")
+            .fromResource(
+              if (!test) { "day5.txt" }
+              else { "day5-test.txt" }
+            )
             .getLines
             .filter(p => p.length > 0)
             .map(str => str.split(" -> ").flatMap(s => s.split(",")).map(s => s.toInt))

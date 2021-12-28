@@ -8,9 +8,12 @@ import scala.io.Source
 import scala.collection.parallel.ParSeq
 
 object Day10 extends DayTemplate[ParSeq[Either[Token, List[Token]]]] {
-    def parseInput(): ParSeq[Either[Token, List[Token]]] = {
+    def parseInput(test: Boolean): ParSeq[Either[Token, List[Token]]] = {
         Source
-            .fromResource("day10.txt")
+            .fromResource(
+              if (!test) { "day10.txt" }
+              else { "day10-test.txt" }
+            )
             .getLines
             .filter(!_.isBlank)
             .toList

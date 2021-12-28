@@ -7,15 +7,20 @@ final private case class Player(val square: Int, val score: Long)
 type Players = (Player, Player)
 
 object Day21 extends DayTemplate[Players] {
-    final def parseInput(): Players = {
-        //return (new Player(4, 0), new Player(8, 0))
-        return (new Player(6, 0), new Player(1, 0))
+    final def parseInput(test: Boolean = false): Players = {
+        if (!test) {
+            (new Player(6, 0), new Player(1, 0))
+        }
+        else {
+            (new Player(4, 0), new Player(8, 0))
+        }
     }
 
     private final val deterministicDice = Iterator.iterate(1)(a => {
-        if (a <= 99){
+        if (a <= 99) {
             a + 1
-        }else{
+        }
+        else {
             1
         }
     })
@@ -44,8 +49,7 @@ object Day21 extends DayTemplate[Players] {
                         .map(c => a + b + c)
                 )
         )
-        .foldLeft(Map.empty[Int, Int])
-        ((acc, v) => {
+        .foldLeft(Map.empty[Int, Int])((acc, v) => {
             acc + (v -> (acc.getOrElse(v, 0) + 1))
         })
 
@@ -57,15 +61,14 @@ object Day21 extends DayTemplate[Players] {
       }
       else {
           diracMoves
-            .foldLeft((0L, 0L))
-            ((acc, curr) => {
-                val (existingWins1, existingWins2) = acc
-                val (totalRoll, instances) = curr
-                val nextPos = ((player1.square + totalRoll - 1) % 10) + 1
-                val nextScore = player1.score + nextPos
-                val (wins2, wins1) = trackPartTwo(player2, new Player(nextPos, nextScore))
-                (existingWins1 + wins1 * instances, existingWins2 + wins2 * instances)
-            })
+              .foldLeft((0L, 0L))((acc, curr) => {
+                  val (existingWins1, existingWins2) = acc
+                  val (totalRoll, instances)         = curr
+                  val nextPos                        = ((player1.square + totalRoll - 1) % 10) + 1
+                  val nextScore                      = player1.score + nextPos
+                  val (wins2, wins1)                 = trackPartTwo(player2, new Player(nextPos, nextScore))
+                  (existingWins1 + wins1 * instances, existingWins2 + wins2 * instances)
+              })
       }
     )
 

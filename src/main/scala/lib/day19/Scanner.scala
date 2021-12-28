@@ -1,4 +1,5 @@
 package lib.day19
+import lib.Coord3
 import scala.io.Source
 import scala.annotation.tailrec
 import scala.collection.parallel.CollectionConverters.*
