@@ -31,20 +31,20 @@ private val dayMap: Map[Int, DayExec] = Map(
   (16, DayExec(Day16)),
   (17, DayExec(Day17)),
   (18, DayExec(Day18)),
-  (19, DayExec(Day19)),
-  (20, DayExec(Day20)),
+  //(19, DayExec(Day19)),
+  //(20, DayExec(Day20)),
   (21, DayExec(Day21))
 );
 
 @main def hello: Unit = {
     println("Let's go AoC 2021!")
-    if (true) {
+    if (false) {
         println("Warming up the JVM")
         time({
             for (x <- 1 to 1000) {
                 dayMap.par
                     .foreach((num, exec) => {
-                        if (num == 19 || num == 20 || num == 21) {
+                        if (num == 19 || num == 20) {
                             if (x % 10 == 3 || x > 900) {
                                 exec.test.apply
                             }
