@@ -37,24 +37,29 @@ private val dayMap: Map[Int, DayExec] = Map(
 
 @main def hello: Unit = {
     println("Let's go AoC 2021!")
-    println("Warming up the JVM")
-
-    time({
-        for (x <- 1 to 1000) {
-            dayMap.foreach((num, exec) => {
-                if (num == 19) {
-                    if (x % 10 == 3 || x > 900) {
+    if (true) {
+        println("Warming up the JVM")
+        time({
+            for (x <- 1 to 1000) {
+                dayMap.foreach((num, exec) => {
+                    if (num == 19 || num == 20 || num == 21) {
+                        if (x % 10 == 3 || x > 900) {
+                            exec.test.apply
+                        }
+                    }
+                    else {
                         exec.test.apply
                     }
+                })
+                if ((x < 900 && (x % 100 == 2 || x % 100 == 3)) || (x >= 900 && x % 50 == 0)) {
+                    println("\tExec run " + x)
                 }
-                else {
-                    exec.test.apply
-                }
-            })
-        }
-        print("Warming the VM took: ")
-    })
-    println("Running production!")
+            }
+            print("Warming the VM took: ")
+        })
+        println("Running production!")
+    }
+
     time({
         dayMap.foreach((num, exec) => {
             exec.prod.apply(num)
