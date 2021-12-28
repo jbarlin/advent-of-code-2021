@@ -1,5 +1,6 @@
 import java.util.concurrent.TimeUnit
 import lib.{DayTemplate, ExtendingDayTemplate}
+import scala.collection.parallel.CollectionConverters._
 
 private final class DayExec(val test: () => Unit, val prod: (num: Int) => Unit)
 
@@ -41,23 +42,24 @@ private val dayMap: Map[Int, DayExec] = Map(
         println("Warming up the JVM")
         time({
             for (x <- 1 to 1000) {
-                dayMap.foreach((num, exec) => {
-                    if (num == 19 || num == 20 || num == 21) {
-                        if (x % 10 == 3 || x > 900) {
+                dayMap.par
+                    .foreach((num, exec) => {
+                        if (num == 19 || num == 20 || num == 21) {
+                            if (x % 10 == 3 || x > 900) {
+                                exec.test.apply
+                            }
+                        }
+                        else {
                             exec.test.apply
                         }
-                    }
-                    else {
-                        exec.test.apply
-                    }
-                })
+                    })
                 if ((x < 900 && (x % 100 == 2 || x % 100 == 3)) || (x >= 900 && x % 50 == 0)) {
                     println("\tExec run " + x)
                 }
             }
             print("Warming the VM took: ")
         })
-        println("Running production!")
+        println("\nRunning production!")
     }
 
     time({
@@ -101,12 +103,19 @@ def runDayExtended[T, A](day: Int, callable: ExtendingDayTemplate[T, A], test: B
 }
 
 def time[R](block: => R): R = {
-    val t0     = System.nanoTime()
-    val result = block // call-by-name
-    val t1     = System.nanoTime()
-    print(
-      "\t(Time:" + TimeUnit.MILLISECONDS
-          .convert((t1 - t0), TimeUnit.NANOSECONDS) + "ms)\t"
-    )
+    val t0       = System.nanoTime()
+    val result   = block // call-by-name
+    val t1       = System.nanoTime()
+    val convertM = TimeUnit.MILLISECONDS
+        .convert((t1 - t0), TimeUnit.NANOSECONDS)
+    if (convertM < 20000) {
+        print("\t(Time:" + convertM + "ms)\t")
+    }
+    else {
+        val convertS = TimeUnit.SECONDS
+            .convert((t1 - t0), TimeUnit.NANOSECONDS)
+        print("\t(Time:" + convertS + "s)\t")
+    }
+
     result
 }
